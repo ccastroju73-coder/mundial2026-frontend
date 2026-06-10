@@ -14,42 +14,34 @@ export default function MatchDetail({ matches }) {
   const isDataLoaded = matchStore?.titulares_home && matchStore.titulares_home.length > 0;
   const loading = !isDataLoaded;
 
-  const loadAll = useCallback(async () => {
-    if (!match) return;
-    
-    // AÑADE ESTO AQUÍ:
-  console.log("Buscando jugadores para los equipos:", {
-    home_team_id: match.home_team_id,
-    away_team_id: match.away_team_id,
-    match_id: match._id
-  });
-  
-    try {
-      const fetchSquad = async (teamId) => {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/players/${teamId}`);
-        const data = await response.json();
-        
-        // Normalizamos los datos: buscamos array directamente o dentro de propiedades comunes
-        const players = Array.isArray(data) ? data : (data.players || data.data || []);
-        
-        return Array.isArray(players) 
-          ? players.sort((a, b) => a.jersey_number - b.jersey_number) 
-          : [];
-      };
-
-      const [homePlayers, awayPlayers] = await Promise.all([
-        fetchSquad(match.home_team_id),
-        fetchSquad(match.away_team_id)
-      ]);
-
-      // Guardamos en el store (se encargará de dividir en titulares/banca)
-      setInitialData(homePlayers, true);
-      setInitialData(awayPlayers, false);
+const loadAll = useCallback(async () => {
+  if (!match) return;
+  try {
+    const fetchSquad = async (teamId) => {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/players/${teamId}`);
+      const result = await response.json();
       
-    } catch (error) {
-      console.error("Error al cargar los datos del partido:", error);
-    }
-  }, [match, setInitialData]);
+      // LA CORRECCIÓN: 
+      // El API devuelve { "squad": [...] }, así que accedemos a result.squad
+      // Si result es un array (como en la captura de South Africa), lo usamos, si no, buscamos .squad
+      const players = Array.isArray(result) ? result[0]?.squad : (result.squad || []);
+      
+      return Array.isArray(players) 
+        ? players.sort((a, b) => a.jersey_number - b.jersey_number) 
+        : [];
+    };
+
+    const [homePlayers, awayPlayers] = await Promise.all([
+      fetchSquad(match.home_team_id),
+      fetchSquad(match.away_team_id)
+    ]);
+
+    setInitialData(homePlayers, true);
+    setInitialData(awayPlayers, false);
+  } catch (error) {
+    console.error("Error al cargar:", error);
+  }
+}, [match, setInitialData]);
 
   useEffect(() => {
     if (match && !isDataLoaded) {
