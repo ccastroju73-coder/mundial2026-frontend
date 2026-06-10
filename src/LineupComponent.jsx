@@ -6,31 +6,36 @@ export default function LineupComponent({ homePlayers, awayPlayers, homeBench, a
   const homeCoach = coaches[match.home_team_id];
   const awayCoach = coaches[match.away_team_id];
 
+  // Identificamos si el partido ya terminó o no
+  // Ajusta 'match.status' según el nombre que tenga en tu base de datos (ej: 'finished', 'finalized', etc.)
+  const isFinished = match.status === 'finished' || match.status === 'Finalizado';
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-[#1a1c21] text-white rounded-lg">
-     {/* Header Inteligente */}
-        <div className="text-center border-b border-gray-700 pb-6 mb-8">
-           {/* Nombres de los equipos */}
-           <div className="flex justify-center items-center gap-12 text-2xl font-bold mb-4">
-               <span>{match.home_team_name}</span>
-               <span>{match.away_team_name}</span>
+      {/* Header Dinámico */}
+      <div className="text-center border-b border-gray-700 pb-6 mb-8">
+        {/* Nombres de los equipos */}
+        <div className="flex justify-center items-center gap-12 text-2xl font-bold mb-4">
+          <span>{match.home_team_name}</span>
+          <span>{match.away_team_name}</span>
+        </div>
+
+        {/* Marcador o VS */}
+        {isFinished ? (
+          <div className="text-6xl font-black my-2 tracking-widest">
+            {match.score?.home ?? 0} - {match.score?.away ?? 0}
           </div>
+        ) : (
+          <div className="text-2xl font-bold text-gray-500 my-6">VS</div>
+        )}
 
-       {/* Marcador - Solo mostrar si el partido ya inició o terminó */}
-       {match.status !== 'not_started' ? (
-           <div className="text-6xl font-black my-2 tracking-widest">
-              {match.score?.home ?? 0} - {match.score?.away ?? 0}
-           </div>
-      ) : (
-      <div className="text-xl font-bold text-gray-500 my-4">VS</div>
-    )}
+        {/* Etiqueta de estado */}
+        <p className="text-sm font-medium uppercase text-gray-400">
+          {isFinished ? 'FINALIZADO' : 'PRÓXIMO PARTIDO'}
+        </p>
+      </div>
 
-  {/* Estado del partido */}
-  <p className={`text-sm font-medium uppercase ${match.status === 'not_started' ? 'text-yellow-500' : 'text-gray-400'}`}>
-    {match.status === 'not_started' ? 'Próximo Partido' : 'Finalizado'}
-  </p>
-</div>
-
+      {/* ... resto de tu código de alineaciones (Formación Inicial y Suplentes) ... */}
       {/* Formación Inicial */}
       <h2 className="text-lg font-bold mb-4 uppercase text-gray-400">Formación Inicial</h2>
       <div className="grid grid-cols-2 gap-8">
