@@ -1,12 +1,18 @@
 import { coaches } from './coaches';
 
 export default function LineupComponent({ homePlayers, awayPlayers, homeBench, awayBench, match }) {
-  // Obtenemos los nombres de los DTs usando el ID del equipo
+  
+  // PROTECCIÓN: Si no existe el objeto match o sus IDs, salimos de la función
+  if (!match || !match.home_team_id) {
+    return <div className="text-white text-center p-4">Cargando detalles del partido...</div>;
+  }
+
+  // Ahora sí podemos acceder a los datos con seguridad
   const homeCoach = coaches[match.home_team_id];
   const awayCoach = coaches[match.away_team_id];
 
   return (
-    <div className="bg-[#1a1c21] text-white rounded-lg p-6 max-w-4xl mx-auto shadow-xl">
+     <div className="bg-[#1a1c21] text-white rounded-lg p-6 max-w-4xl mx-auto shadow-xl">
       
       {/* 1. Header del Partido (Marcador) */}
       <div className="text-center border-b border-gray-700 pb-6 mb-8">

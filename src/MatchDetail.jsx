@@ -84,6 +84,7 @@ const isDataLoaded = matchStore?.titulares_home?.length > 0 || matchStore?.titul
 
           homeBench={matchStore.banca_home || []}
           awayBench={matchStore.banca_away || []}
+          match={match}
         />
       )}
     </div>
