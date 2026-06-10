@@ -1,0 +1,45 @@
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import axios from 'axios';
+import Home from './Home';
+import FullFixture from './FullFixture';
+import MatchDetail from './MatchDetail';
+
+function App() {
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMatches = async () => {
+      try {
+        // Usamos la variable de entorno aquí
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/matches`);
+        setMatches(response.data);
+      } catch (err) {
+        console.error("Error al cargar partidos:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchMatches();
+  }, []);
+
+  if (loading) {
+    return <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">Cargando partidos...</div>;
+  }
+
+  return (
+    <BrowserRouter>
+      <div className="min-h-screen bg-gray-950 text-white">
+        <Routes>
+          <Route path="/" element={<Home matches={matches} />} />
+          <Route path="/calendario" element={<FullFixture matches={matches} />} />
+          <Route path="/partido/:id" element={<MatchDetail matches={matches} />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
+  );
+}
+
+export default App;
