@@ -1,8 +1,5 @@
-//import PlayerRow from './PlayerRow'; // <--- ¡Añade esta línea!
-
-// LineupComponent.jsx
+// src/LineupComponent.jsx
 export default function LineupComponent({ homePlayers, awayPlayers }) {
-  // Aseguramos mostrar hasta 11 jugadores
   const rows = Array.from({ length: 11 }); 
 
   return (

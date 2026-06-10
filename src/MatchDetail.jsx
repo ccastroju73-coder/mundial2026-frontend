@@ -55,14 +55,18 @@ export default function MatchDetail({ matches }) {
         ← Volver a Inicio
       </button>
 
-      {loading ? (
-        <div className="text-center p-10 text-gray-500">Cargando alineaciones...</div>
-      ) : (
-        <LineupComponent 
-           homePlayers={matchStore.titulares_home || []} 
-           awayPlayers={matchStore.titulares_away || []} 
-        />
-      )}
+       // En el return de MatchDetail.jsx
+       {loading ? (
+          <div className="text-center p-10 text-gray-500">Cargando...</div>
+        ) : (
+          (() => {
+            console.log("Cargando LineupComponent con:", matchStore.titulares_home);
+            return <LineupComponent 
+                    homePlayers={matchStore.titulares_home || []} 
+                    awayPlayers={matchStore.titulares_away || []} 
+                  />;
+          })()
+     )}
     </div>
   );
 }
