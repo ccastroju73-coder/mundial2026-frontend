@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 export const useMatchStore = create((set) => ({
-  // Estado inicial unificado
+  // Unificamos todo bajo 'match' para que sea consistente
   match: {
     titulares_home: [],
     titulares_away: [],
@@ -12,7 +12,7 @@ export const useMatchStore = create((set) => ({
     cambios: []
   },
 
-  // Función única y correcta
+  // Función única para cargar datos
   setInitialData: (homeData, awayData) => set((state) => ({
     match: {
       ...state.match,
@@ -21,13 +21,13 @@ export const useMatchStore = create((set) => ({
     }
   })),
 
-  // Acción para hacer cambios (ajustada para usar titulares_home/away)
+  // Acción para cambios
   hacerCambio: (idSale, idEntra, esLocal) => set((state) => {
     const keyTitulares = esLocal ? 'titulares_home' : 'titulares_away';
     const keyBanca = esLocal ? 'banca_home' : 'banca_away';
     
-    const titulares = state.match[keyTitulares];
-    const banca = state.match[keyBanca];
+    const titulares = state.match[keyTitulares] || [];
+    const banca = state.match[keyBanca] || [];
     
     const jugadorSale = titulares.find(j => j.id === idSale);
     const jugadorEntra = banca.find(j => j.id === idEntra);
@@ -37,7 +37,7 @@ export const useMatchStore = create((set) => ({
         ...state.match,
         [keyTitulares]: titulares.filter(j => j.id !== idSale).concat(jugadorEntra),
         [keyBanca]: banca.filter(j => j.id !== idEntra).concat(jugadorSale),
-        cambios: [...state.match.cambios, { sale: jugadorSale.name, entra: jugadorEntra.name, min: new Date().toLocaleTimeString() }]
+        cambios: [...state.match.cambios, { sale: jugadorSale?.name, entra: jugadorEntra?.name, min: new Date().toLocaleTimeString() }]
       }
     };
   })

@@ -8,13 +8,15 @@ import SquadList from './SquadList';
 export default function MatchDetail({ matches }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  // Eliminamos el estado local 'loading' porque usaremos los datos del store
-  const { matchData, setInitialData } = useMatchStore();
+
+  // 1. RENOMBRAMOS lo que viene de Zustand a 'matchStore' para evitar confusión
+  const { match: matchStore, setInitialData } = useMatchStore();
   
+  // 2. Esta variable 'match' es la que buscas en el array de partidos (matches)
   const match = matches.find(m => m._id === id);
 
-  // 1. Determinamos si estamos cargando de forma "derivada"
-  const isDataLoaded = matchData.titulares_home && matchData.titulares_home.length > 0;
+  // 3. Usamos 'matchStore' para verificar si los datos de alineación ya cargaron
+  const isDataLoaded = matchStore?.titulares_home && matchStore.titulares_home.length > 0;
   const loading = !isDataLoaded;
 
   const loadAll = useCallback(async () => {
@@ -35,12 +37,10 @@ export default function MatchDetail({ matches }) {
     } catch (error) {
       console.error("Error al cargar:", error);
     }
-    // Ya no necesitamos setLoading(false) aquí porque el cambio en matchData 
-    // hará que 'loading' sea false automáticamente.
   }, [match, setInitialData]);
 
-  // 2. Solo disparamos la carga si falta información
   useEffect(() => {
+    // Si tenemos el partido pero los datos del store están vacíos, cargamos
     if (match && !isDataLoaded) {
       loadAll();
     }
@@ -53,11 +53,7 @@ export default function MatchDetail({ matches }) {
 
   return (
     <div className="min-h-screen bg-[#05070a] text-white p-4 md:p-12">
-      {/* El botón ahora usa navigate correctamente */}
-      <button 
-        onClick={() => navigate('/')} 
-        className="text-gray-400 hover:text-white mb-8"
-      >
+      <button onClick={() => navigate('/')} className="text-gray-400 hover:text-white mb-8">
         ← Volver a Inicio
       </button>
 
@@ -65,20 +61,16 @@ export default function MatchDetail({ matches }) {
         <div className="text-center p-10 text-gray-500">Cargando alineaciones...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {/* SquadList ahora usa correctamente el objeto coaches importado */}
-// En lugar de matchData.titulares_home, usa:
-<SquadList 
-  title={`Alineación ${home?.name}`} 
-  players={matchData?.titulares_home || []} 
-  teamId={match.home_team_id}
-  coachName={coaches[match.home_team_id]} 
-/>
-<SquadList 
-  title={`Alineación ${away?.name}`} 
-  players={matchData?.titulares_away || []} 
-  teamId={match.away_team_id}
-  coachName={coaches[match.away_team_id]} 
-/>
+          <SquadList 
+            title={`Alineación ${home?.name}`} 
+            players={matchStore?.titulares_home || []} 
+            coachName={coaches[match.home_team_id]} 
+          />
+          <SquadList 
+            title={`Alineación ${away?.name}`} 
+            players={matchStore?.titulares_away || []} 
+            coachName={coaches[match.away_team_id]} 
+          />
         </div>
       )}
     </div>
