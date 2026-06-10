@@ -16,25 +16,31 @@ export default function MatchDetail({ matches }) {
   const loading = !isDataLoaded;
 
   const loadAll = useCallback(async () => {
-    if (!match) return;
-    try {
+     if (!match) return;
+     try {
       const fetchSquad = async (teamId) => {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/players/${teamId}`);
         const data = await response.json();
+        // Si recibimos datos, los ordenamos. Si están vacíos, devolvemos un array vacío.
         return Array.isArray(data) ? data.sort((a, b) => a.jersey_number - b.jersey_number) : [];
-      };
+     };
 
-      const [homePlayers, awayPlayers] = await Promise.all([
-        fetchSquad(match.home_team_id),
-        fetchSquad(match.away_team_id)
-      ]);
+    const [homePlayers, awayPlayers] = await Promise.all([
+      fetchSquad(match.home_team_id),
+      fetchSquad(match.away_team_id)
+    ]);
 
-      setInitialData(homePlayers, true);
-      setInitialData(awayPlayers, false);
-    } catch (error) {
-      console.error("Error al cargar:", error);
-    }
-  }, [match, setInitialData]);
+    // AQUÍ ESTÁ LA CLAVE: 
+    // Si la alineación (titulares) no existe o está vacía, usamos los jugadores de la base de datos completa.
+    const hData = homePlayers.length > 0 ? homePlayers : []; // Puedes poner aquí tu lógica de fallback
+    const aData = awayPlayers.length > 0 ? awayPlayers : [];
+
+    setInitialData(hData, true);
+    setInitialData(aData, false);
+  } catch (error) {
+    console.error("Error al cargar:", error);
+  }
+}, [match, setInitialData]);
 
     useEffect(() => {
        console.log("Estado actual de matchStore:", matchStore);

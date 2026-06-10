@@ -23,6 +23,13 @@ export default function LineupComponent({ homePlayers, awayPlayers }) {
           </div>
         ))}
       </div>
+      {rows.map((_, i) => (
+        <div key={i} className="flex items-center gap-2 p-2 bg-white/5 rounded">
+          <span className="text-white">
+             {homePlayers[i] ? JSON.stringify(homePlayers[i]) : 'Vacío'}
+          </span>
+        </div>
+     ))}
     </div>
   );
 }
