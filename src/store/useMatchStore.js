@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 
 export const useMatchStore = create((set) => ({
-  // Unificamos todo bajo 'match' para que sea consistente
   match: {
     titulares_home: [],
     titulares_away: [],
@@ -11,22 +10,15 @@ export const useMatchStore = create((set) => ({
     stats: { possession: [50, 50], shots: [0, 0], corners: [0, 0], fouls: [0, 0] },
     cambios: []
   },
-    // Dentro de useMatchStore.js
-  setInitialData: (todosLosJugadores, esLocal) => set((state) => {
-  // Si tenemos más de 11, los primeros 11 son titulares, el resto banca
-   const titulares = todosLosJugadores.slice(0, 11);
-   const banca = todosLosJugadores.slice(11);
-  
-   return {
-     matchStore: {
-       ...state.matchStore,
-       [esLocal ? 'titulares_home' : 'titulares_away']: titulares,
-       [esLocal ? 'banca_home' : 'banca_away']: banca
-     }
-   };
- }),
 
-  // Acción para cambios
+  setInitialData: (todosLosJugadores, esLocal) => set((state) => ({
+    match: {
+      ...state.match,
+      [esLocal ? 'titulares_home' : 'titulares_away']: todosLosJugadores.slice(0, 11),
+      [esLocal ? 'banca_home' : 'banca_away']: todosLosJugadores.slice(11)
+    }
+  })),
+
   hacerCambio: (idSale, idEntra, esLocal) => set((state) => {
     const keyTitulares = esLocal ? 'titulares_home' : 'titulares_away';
     const keyBanca = esLocal ? 'banca_home' : 'banca_away';
@@ -40,9 +32,14 @@ export const useMatchStore = create((set) => ({
     return {
       match: {
         ...state.match,
+        // CORRECCIÓN: Cambiamos 'jid' por 'j.id'
         [keyTitulares]: titulares.filter(j => j.id !== idSale).concat(jugadorEntra),
         [keyBanca]: banca.filter(j => j.id !== idEntra).concat(jugadorSale),
-        cambios: [...state.match.cambios, { sale: jugadorSale?.name, entra: jugadorEntra?.name, min: new Date().toLocaleTimeString() }]
+        cambios: [...state.match.cambios, { 
+            sale: jugadorSale?.name, 
+            entra: jugadorEntra?.name, 
+            min: new Date().toLocaleTimeString() 
+        }]
       }
     };
   })
