@@ -3,11 +3,22 @@ import { coaches } from './coaches';
 export default function LineupComponent({ homePlayers = [], awayPlayers = [], homeBench = [], awayBench = [], match, teams = [] }) {
   if (!match) return <div className="text-white p-10 text-center">Cargando datos del encuentro...</div>;
 
+  // 1. Aseguramos que teams siempre sea un array, incluso si llega nulo
+  const safeTeams = Array.isArray(teams) ? teams : [];
+
+  // 2. Buscamos el equipo con seguridad
+  const homeTeamData = safeTeams.find(t => t.id === match.home_team_id) || { 
+      name_en: match.home_team_name, 
+      flag: '' 
+  };
+  
+  const awayTeamData = safeTeams.find(t => t.id === match.away_team_id) || { 
+      name_en: match.away_team_name, 
+      flag: '' 
+  };
+
   const homeCoach = coaches[match.home_team_id] || "DT no asignado";
   const awayCoach = coaches[match.away_team_id] || "DT no asignado";
-
-  const homeTeamData = teams.find(t => t.id === match.home_team_id) || { name_en: match.home_team_name, flag: '' };
-  const awayTeamData = teams.find(t => t.id === match.away_team_id) || { name_en: match.away_team_name, flag: '' };
 
   // Lógica de estado
   const isFinished = String(match.finished).toUpperCase() === "TRUE" || match.time_elapsed === "finished";
@@ -15,7 +26,7 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
   
   // Siempre mostramos el marcador si ya empezó o terminó. 
   // Si quieres mostrar 0-0 en los próximos partidos, cambia esta línea a: const showScore = true;
-  const showScore = isFinished || isLive; 
+  const showScore = true;
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-[#1a1c21] text-white rounded-lg">
