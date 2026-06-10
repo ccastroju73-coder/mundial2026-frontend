@@ -20,16 +20,18 @@ const loadAll = useCallback(async () => {
     const fetchSquad = async (teamId) => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/players/${teamId}`);
       const result = await response.json();
-      
-      // LA CORRECCIÓN: 
-      // El API devuelve { "squad": [...] }, así que accedemos a result.squad
-      // Si result es un array (como en la captura de South Africa), lo usamos, si no, buscamos .squad
-      const players = Array.isArray(result) ? result[0]?.squad : (result.squad || []);
-      
+  
+      // 1. Si la respuesta es un array (como el caso de ID 2), tomamos el primer objeto.
+      // 2. Si es un objeto (como el caso de ID 1), usamos el resultado directamente.
+      const data = Array.isArray(result) ? result[0] : result;
+  
+      // 3. Extraemos el array 'squad' que es donde están los jugadores reales.
+      const players = data?.squad || [];
+  
       return Array.isArray(players) 
-        ? players.sort((a, b) => a.jersey_number - b.jersey_number) 
-        : [];
-    };
+          ? players.sort((a, b) => a.jersey_number - b.jersey_number) 
+      : [];
+  };
 
     const [homePlayers, awayPlayers] = await Promise.all([
       fetchSquad(match.home_team_id),
