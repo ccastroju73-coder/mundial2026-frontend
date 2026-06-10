@@ -55,7 +55,7 @@ export default function MatchDetail({ matches }) {
           homeBench={matchStore.banca_home || []}
           awayBench={matchStore.banca_away || []}
           match={match}
-          eams={teams || []}
+          teams={Object.values(teams)}
         />
       )}
     </div>
