@@ -1,4 +1,6 @@
 export default function SquadList({ title, players, coachName }) {
+  console.log("Título:", title);
+  console.log("Jugadores recibidos:", players);
   // 1. Aseguramos que tenemos un array, si no, devolvemos un array vacío
   const safePlayers = Array.isArray(players) ? players : [];
   

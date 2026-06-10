@@ -1,21 +1,31 @@
-import PlayerRow from './PlayerRow'; // <--- ¡Añade esta línea!
+//import PlayerRow from './PlayerRow'; // <--- ¡Añade esta línea!
 
-export default function LineupView({ homePlayers, awayPlayers }) {
-  const maxLength = Math.max(homePlayers.length, awayPlayers.length);
-  
+// LineupComponent.jsx
+export default function LineupComponent({ homePlayers, awayPlayers }) {
+  // Aseguramos mostrar hasta 11 jugadores
+  const rows = Array.from({ length: 11 }); 
+
   return (
-    <div className="bg-[#1a1d23] rounded-3xl p-6">
-      <div className="grid grid-cols-2 text-gray-500 text-xs uppercase font-bold mb-4">
-        <span>Equipo Local</span>
-        <span>Equipo Visitante</span>
+    <div className="grid grid-cols-2 gap-4">
+      {/* Columna Local */}
+      <div className="space-y-2">
+        {rows.map((_, i) => (
+          <div key={i} className="flex items-center gap-2 p-2 bg-white/5 rounded">
+            <span className="font-bold text-gray-500">{homePlayers[i]?.jersey_number || '-'}</span>
+            <span className="text-white">{homePlayers[i]?.name || 'Sin asignar'}</span>
+          </div>
+        ))}
       </div>
       
-      {[...Array(maxLength)].map((_, i) => (
-        <div key={i} className="grid grid-cols-2 gap-4 py-2 border-b border-white/5">
-          <PlayerRow player={homePlayers[i]} />
-          <PlayerRow player={awayPlayers[i]} />
-        </div>
-      ))}
+      {/* Columna Visitante */}
+      <div className="space-y-2">
+        {rows.map((_, i) => (
+          <div key={i} className="flex items-center gap-2 p-2 bg-white/5 rounded">
+            <span className="text-white">{awayPlayers[i]?.name || 'Sin asignar'}</span>
+            <span className="font-bold text-gray-500">{awayPlayers[i]?.jersey_number || '-'}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

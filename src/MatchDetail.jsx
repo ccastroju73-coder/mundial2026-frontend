@@ -1,25 +1,21 @@
 import { useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // navigate vuelve a estar activo
-import { teams } from './teamsData';
-import { coaches } from './coaches'; // coaches vuelve a estar activo
+import { useParams, useNavigate } from 'react-router-dom';
+//import { teams } from './teamsData';
 import { useMatchStore } from "./store/useMatchStore";
-import SquadList from './SquadList'; 
+// Importamos el nuevo componente
+import LineupComponent from './LineupComponent'; 
 
 export default function MatchDetail({ matches }) {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // 1. RENOMBRAMOS lo que viene de Zustand a 'matchStore' para evitar confusión
   const { match: matchStore, setInitialData } = useMatchStore();
-  
-  // 2. Esta variable 'match' es la que buscas en el array de partidos (matches)
   const match = matches.find(m => m._id === id);
 
-  // 3. Usamos 'matchStore' para verificar si los datos de alineación ya cargaron
   const isDataLoaded = matchStore?.titulares_home && matchStore.titulares_home.length > 0;
   const loading = !isDataLoaded;
 
-const loadAll = useCallback(async () => {
+  const loadAll = useCallback(async () => {
     if (!match) return;
     try {
       const fetchSquad = async (teamId) => {
@@ -33,15 +29,14 @@ const loadAll = useCallback(async () => {
         fetchSquad(match.away_team_id)
       ]);
 
-      // Inicializamos automáticamente separando en 11 titulares y el resto suplentes
-      setInitialData(homePlayers, true);  // true = esLocal
-      setInitialData(awayPlayers, false); // false = esVisitante
+      setInitialData(homePlayers, true);
+      setInitialData(awayPlayers, false);
     } catch (error) {
       console.error("Error al cargar:", error);
     }
-  }, [match, setInitialData]); // Fin de loadAll
+  }, [match, setInitialData]);
+
   useEffect(() => {
-    // Si tenemos el partido pero los datos del store están vacíos, cargamos
     if (match && !isDataLoaded) {
       loadAll();
     }
@@ -49,8 +44,10 @@ const loadAll = useCallback(async () => {
 
   if (!match) return <div className="text-white p-10">Partido no encontrado</div>;
 
-  const home = teams[match.home_team_id];
-  const away = teams[match.away_team_id];
+  // Si decides usar estas variables para mostrar el nombre del equipo, 
+  // simplemente descoméntalas o úsalas en el return.
+  // const home = teams[match.home_team_id];
+  // const away = teams[match.away_team_id];
 
   return (
     <div className="min-h-screen bg-[#05070a] text-white p-4 md:p-12">
@@ -61,18 +58,10 @@ const loadAll = useCallback(async () => {
       {loading ? (
         <div className="text-center p-10 text-gray-500">Cargando alineaciones...</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <SquadList 
-             title={`Alineación ${home?.name}`} 
-             players={matchStore?.titulares_home || []} // El || [] evita el error si es undefined
-             coachName={coaches[match.home_team_id]} 
-          /> 
-         <SquadList 
-             title={`Alineación ${away?.name}`} 
-             players={matchStore?.titulares_away || []} // El || [] evita el error si es undefined
-             coachName={coaches[match.away_team_id]} 
-         />
-        </div>
+        <LineupComponent 
+           homePlayers={matchStore.titulares_home || []} 
+           awayPlayers={matchStore.titulares_away || []} 
+        />
       )}
     </div>
   );
