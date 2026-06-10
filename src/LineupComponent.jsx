@@ -8,11 +8,24 @@ export default function LineupComponent({ homePlayers, awayPlayers, homeBench, a
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-[#1a1c21] text-white rounded-lg">
-      {/* Header */}
-      <div className="text-center border-b border-gray-700 pb-4 mb-6">
-        <h1 className="text-2xl font-bold">{match.home_team_name} vs {match.away_team_name}</h1>
-      </div>
+        {/* Header Mejorado */}
+        <div className="text-center border-b border-gray-700 pb-6 mb-8">
+             {/* Nombres de los equipos */}
+             <div className="flex justify-center items-center gap-12 text-2xl font-bold mb-4">
+                <span>{match.home_team_name}</span>
+                <span>{match.away_team_name}</span>
+             </div>
 
+             {/* Marcador */}
+             <div className="text-6xl font-black my-2 tracking-widest">
+               {match.score?.home ?? 0} - {match.score?.away ?? 0}
+             </div>
+
+            {/* Estado del partido */}
+            <p className={`text-sm font-medium ${match.status === 'not_started' ? 'text-yellow-500' : 'text-gray-400'}`}>
+                {match.status === 'not_started' ? 'NO INICIADO' : 'FINALIZADO'}
+            </p>
+        </div>
       {/* Formación Inicial */}
       <h2 className="text-lg font-bold mb-4 uppercase text-gray-400">Formación Inicial</h2>
       <div className="grid grid-cols-2 gap-8">
