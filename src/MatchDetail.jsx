@@ -14,42 +14,47 @@ export default function MatchDetail({ matches }) {
   const isDataLoaded = matchStore?.titulares_home && matchStore.titulares_home.length > 0;
   const loading = !isDataLoaded;
 
-const loadAll = useCallback(async () => {
-  if (!match) return;
-  try {
-    const fetchSquad = async (teamId) => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/players/${teamId}`);
-      const result = await response.json();
-  
-      // 1. Si la respuesta es un array (como el caso de ID 2), tomamos el primer objeto.
-      // 2. Si es un objeto (como el caso de ID 1), usamos el resultado directamente.
-      const data = Array.isArray(result) ? result[0] : result;
-  
-      // 3. Extraemos el array 'squad' que es donde están los jugadores reales.
-      const players = data?.squad || [];
-  
-      return Array.isArray(players) 
+  const loadAll = useCallback(async () => {
+    if (!match) return;
+    
+    try {
+      const fetchSquad = async (teamId) => {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/players/${teamId}`);
+        const rawData = await response.json();
+        
+        // Normalización: aseguramos que 'data' siempre sea un objeto
+        const data = Array.isArray(rawData) ? rawData[0] : rawData;
+        
+        // Extraemos el 'squad' de forma segura
+        const players = data?.squad || [];
+        
+        console.log(`Jugadores procesados para equipo ${teamId}:`, players);
+        
+        return Array.isArray(players) 
           ? players.sort((a, b) => a.jersey_number - b.jersey_number) 
-      : [];
-  };
+          : [];
+      };
 
-    const [homePlayers, awayPlayers] = await Promise.all([
-      fetchSquad(match.home_team_id),
-      fetchSquad(match.away_team_id)
-    ]);
+      const [homePlayers, awayPlayers] = await Promise.all([
+        fetchSquad(match.home_team_id),
+        fetchSquad(match.away_team_id)
+      ]);
 
-    setInitialData(homePlayers, true);
-    setInitialData(awayPlayers, false);
-  } catch (error) {
-    console.error("Error al cargar:", error);
-  }
-}, [match, setInitialData]);
+      setInitialData(homePlayers, true);
+      setInitialData(awayPlayers, false);
+      
+    } catch (error) {
+      console.error("Error crítico en la carga:", error);
+    }
+  }, [match, setInitialData]);
 
+  // --- ESTE ES EL BLOQUE QUE HABÍAS BORRADO ---
   useEffect(() => {
     if (match && !isDataLoaded) {
       loadAll();
     }
   }, [match, isDataLoaded, loadAll]);
+  // --------------------------------------------
 
   if (!match) {
     return <div className="text-white p-10 text-center">Partido no encontrado</div>;
