@@ -1,51 +1,47 @@
 import { coaches } from './coaches';
 
-export default function LineupComponent({ homePlayers, awayPlayers, homeBench, awayBench, match, teams }) {
- if (!match || !teams || teams.length === 0) {
-    return <div className="text-white text-center p-10">Cargando datos del partido...</div>;
-  }
+export default function LineupComponent({ homePlayers = [], awayPlayers = [], homeBench = [], awayBench = [], match, teams = [] }) {
+  // 1. Si no hay partido, mostramos un estado por defecto pero NO rompe la página
+  if (!match) return <div className="text-white p-10 text-center">Cargando datos del encuentro...</div>;
 
-  // Calculamos los coaches usando el objeto importado y el ID del partido
-  const homeCoach = coaches[match.home_team_id];
-  const awayCoach = coaches[match.away_team_id];
+  // 2. Valores seguros (Defaults)
+  const homeCoach = coaches[match.home_team_id] || "DT no asignado";
+  const awayCoach = coaches[match.away_team_id] || "DT no asignado";
 
-  // Buscamos los datos del equipo en la tabla 'teams' usando el ID
-  const homeTeamData = teams.find(t => t.id === match.home_team_id);
-  const awayTeamData = teams.find(t => t.id === match.away_team_id);
+  // Buscamos equipos con seguridad (si no encuentra, devuelve un objeto vacío para evitar errores)
+  const homeTeamData = teams.find(t => t.id === match.home_team_id) || { name_en: match.home_team_name, flag: '' };
+  const awayTeamData = teams.find(t => t.id === match.away_team_id) || { name_en: match.away_team_name, flag: '' };
 
+  // 3. Marcador inicial forzado a 0-0 si no existe
+  const homeScore = match.score?.home ?? 0;
+  const awayScore = match.score?.away ?? 0;
   const isFinished = match.status === 'finished' || match.status === 'Finalizado';
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-[#1a1c21] text-white rounded-lg">
-      
-      {/* Header Unificado */}
       <div className="text-center border-b border-gray-700 pb-6 mb-8">
-        
-        {/* Nombres y Banderas desde DB */}
         <div className="flex justify-center items-center gap-12 mb-6">
+          {/* Equipo Local */}
           <div className="flex flex-col items-center">
-            {homeTeamData && <img src={homeTeamData.flag} alt={homeTeamData.name_en} className="w-16 h-12 object-contain mb-2" />}
+            {homeTeamData.flag && <img src={homeTeamData.flag} alt={match.home_team_name} className="w-16 h-12 object-contain mb-2" />}
             <span className="text-xl font-bold">{match.home_team_name}</span>
           </div>
 
+          {/* Marcador o VS */}
           <div className="text-4xl font-black">
             {isFinished ? (
-              <span>{match.score?.home ?? 0} - {match.score?.away ?? 0}</span>
+              <span>{homeScore} - {awayScore}</span>
             ) : (
               <span className="text-2xl text-gray-500">VS</span>
             )}
           </div>
 
+          {/* Equipo Visitante */}
           <div className="flex flex-col items-center">
-            {awayTeamData && <img src={awayTeamData.flag} alt={awayTeamData.name_en} className="w-16 h-12 object-contain mb-2" />}
+            {awayTeamData.flag && <img src={awayTeamData.flag} alt={match.away_team_name} className="w-16 h-12 object-contain mb-2" />}
             <span className="text-xl font-bold">{match.away_team_name}</span>
           </div>
         </div>
-
-        {/* Estado del partido */}
-        <p className="text-sm font-medium uppercase text-gray-400">
-          {isFinished ? 'FINALIZADO' : 'PRÓXIMO PARTIDO'}
-        </p>
       </div>
 
       {/* Formación Inicial */}
