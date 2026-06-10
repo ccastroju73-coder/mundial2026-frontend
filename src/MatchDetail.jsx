@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; // navigate vuelve a estar activo
 import { teams } from './teamsData';
 import { coaches } from './coaches'; // coaches vuelve a estar activo
-import { useMatchStore } from '../store/useMatchStore';
+import { useMatchStore } from "./store/useMatchStore";
 import SquadList from './SquadList'; 
 
 export default function MatchDetail({ matches }) {
