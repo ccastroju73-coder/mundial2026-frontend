@@ -81,6 +81,9 @@ const isDataLoaded = matchStore?.titulares_home?.length > 0 || matchStore?.titul
         <LineupComponent 
           homePlayers={matchStore.titulares_home || []} 
           awayPlayers={matchStore.titulares_away || []} 
+
+          homeBench={matchStore.banca_home || []}
+          awayBench={matchStore.banca_away || []}
         />
       )}
     </div>
