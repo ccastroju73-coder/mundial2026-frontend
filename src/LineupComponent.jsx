@@ -1,7 +1,9 @@
 import { coaches } from './coaches';
 
 export default function LineupComponent({ homePlayers, awayPlayers, homeBench, awayBench, match, teams }) {
-  if (!match) return null;
+ if (!match || !teams || teams.length === 0) {
+    return <div className="text-white text-center p-10">Cargando datos del partido...</div>;
+  }
 
   // Calculamos los coaches usando el objeto importado y el ID del partido
   const homeCoach = coaches[match.home_team_id];

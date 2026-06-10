@@ -2,6 +2,7 @@ import { useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useMatchStore } from "./store/useMatchStore";
 import LineupComponent from './LineupComponent';
+import { teams } from './teamsData';
 
 export default function MatchDetail({ matches }) {
   const { id } = useParams();
@@ -54,6 +55,7 @@ export default function MatchDetail({ matches }) {
           homeBench={matchStore.banca_home || []}
           awayBench={matchStore.banca_away || []}
           match={match}
+          eams={teams || []}
         />
       )}
     </div>
