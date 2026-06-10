@@ -17,6 +17,13 @@ export default function MatchDetail({ matches }) {
   const loadAll = useCallback(async () => {
     if (!match) return;
     
+    // AÑADE ESTO AQUÍ:
+  console.log("Buscando jugadores para los equipos:", {
+    home_team_id: match.home_team_id,
+    away_team_id: match.away_team_id,
+    match_id: match._id
+  });
+  
     try {
       const fetchSquad = async (teamId) => {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/players/${teamId}`);
