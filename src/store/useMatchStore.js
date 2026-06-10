@@ -11,15 +11,22 @@ export const useMatchStore = create((set) => ({
     stats: { possession: [50, 50], shots: [0, 0], corners: [0, 0], fouls: [0, 0] },
     cambios: []
   },
-
-  // Función única para cargar datos
-  setInitialData: (homeData, awayData) => set((state) => ({
-    match: {
-      ...state.match,
-      titulares_home: homeData,
-      titulares_away: awayData
-    }
-  })),
+    // Dentro de useMatchStore.js
+    setInitialData: (todosLosJugadores, esLocal) => set((state) => {
+    const titulares = todosLosJugadores.slice(0, 11);
+    const suplentes = todosLosJugadores.slice(11);
+  
+    const keyTitulares = esLocal ? 'titulares_home' : 'titulares_away';
+    const keyBanca = esLocal ? 'banca_home' : 'banca_away';
+  
+    return {
+      match: {
+        ...state.match,
+        [keyTitulares]: titulares,
+        [keyBanca]: suplentes
+      }
+    };
+ }),
 
   // Acción para cambios
   hacerCambio: (idSale, idEntra, esLocal) => set((state) => {

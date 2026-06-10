@@ -19,7 +19,7 @@ export default function MatchDetail({ matches }) {
   const isDataLoaded = matchStore?.titulares_home && matchStore.titulares_home.length > 0;
   const loading = !isDataLoaded;
 
-  const loadAll = useCallback(async () => {
+const loadAll = useCallback(async () => {
     if (!match) return;
     try {
       const fetchSquad = async (teamId) => {
@@ -28,17 +28,18 @@ export default function MatchDetail({ matches }) {
         return Array.isArray(data) ? data.sort((a, b) => a.jersey_number - b.jersey_number) : [];
       };
 
-      const [homeData, awayData] = await Promise.all([
+      const [homePlayers, awayPlayers] = await Promise.all([
         fetchSquad(match.home_team_id),
         fetchSquad(match.away_team_id)
       ]);
 
-      setInitialData(homeData, awayData);
+      // Inicializamos automáticamente separando en 11 titulares y el resto suplentes
+      setInitialData(homePlayers, true);  // true = esLocal
+      setInitialData(awayPlayers, false); // false = esVisitante
     } catch (error) {
       console.error("Error al cargar:", error);
     }
-  }, [match, setInitialData]);
-
+  }, [match, setInitialData]); // Fin de loadAll
   useEffect(() => {
     // Si tenemos el partido pero los datos del store están vacíos, cargamos
     if (match && !isDataLoaded) {
@@ -62,15 +63,15 @@ export default function MatchDetail({ matches }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <SquadList 
-            title={`Alineación ${home?.name}`} 
-            players={matchStore?.titulares_home || []} 
-            coachName={coaches[match.home_team_id]} 
-          />
-          <SquadList 
-            title={`Alineación ${away?.name}`} 
-            players={matchStore?.titulares_away || []} 
-            coachName={coaches[match.away_team_id]} 
-          />
+             title={`Alineación ${home?.name}`} 
+             players={matchStore?.titulares_home || []} // El || [] evita el error si es undefined
+             coachName={coaches[match.home_team_id]} 
+          /> 
+         <SquadList 
+             title={`Alineación ${away?.name}`} 
+             players={matchStore?.titulares_away || []} // El || [] evita el error si es undefined
+             coachName={coaches[match.away_team_id]} 
+         />
         </div>
       )}
     </div>
