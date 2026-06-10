@@ -19,11 +19,14 @@ export default function LineupComponent({ homePlayers, awayPlayers, homeBench, a
       </div>
 
       {/* --- SUPLENTES --- */}
-      <div className="grid grid-cols-2 gap-4">
-        {/* Aquí usas homeBench */}
-        <div className="space-y-2">
-          {homeBench.map((p, i) => (
-            <div key={i}>{p.name}</div>
+       // En tu sección de suplentes dentro de LineupComponent.jsx
+       <div className="space-y-2">
+         {homeBench.map((p, i) => (
+            <div key={i} className="flex items-center gap-2 p-2 bg-white/10 rounded">
+               {/* AQUÍ ACCEDEMOS A LAS PROPIEDADES, NO AL OBJETO 'p' */}
+               <span className="font-bold text-gray-500">{p.jersey_number}</span>
+               <span className="text-white">{p.name}</span>
+            </div>
           ))}
         </div>
         {/* Aquí usas awayBench (esto quitará el aviso) */}
@@ -33,6 +36,6 @@ export default function LineupComponent({ homePlayers, awayPlayers, homeBench, a
           ))}
         </div>
       </div>
-    </div>
+ 
   );
 }
