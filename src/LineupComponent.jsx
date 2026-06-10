@@ -17,8 +17,12 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
   const awayScore = match.away_score ?? 0;
   
   // El partido está terminado si 'finished' es "TRUE" o 'time_elapsed' es "finished"
-  const isFinished = match.finished === "TRUE" || match.time_elapsed === "finished";
+  const isFinished = match.finished === "TRUE";
   const isLive = match.time_elapsed !== "notstarted" && !isFinished;
+
+  // --- LOG DE VERIFICACIÓN ---
+  console.log("¿Es partido finalizado?:", isFinished);
+  console.log("¿Es partido en vivo?:", isLive);
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-[#1a1c21] text-white rounded-lg">
