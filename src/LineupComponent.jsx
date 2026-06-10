@@ -1,28 +1,21 @@
 import { coaches } from './coaches';
 
 export default function LineupComponent({ homePlayers = [], awayPlayers = [], homeBench = [], awayBench = [], match, teams = [] }) {
-  // 1. Si no hay partido, mostramos carga
   if (!match) return <div className="text-white p-10 text-center">Cargando datos del encuentro...</div>;
 
-  // 2. Valores de coaches y equipos
   const homeCoach = coaches[match.home_team_id] || "DT no asignado";
   const awayCoach = coaches[match.away_team_id] || "DT no asignado";
 
   const homeTeamData = teams.find(t => t.id === match.home_team_id) || { name_en: match.home_team_name, flag: '' };
   const awayTeamData = teams.find(t => t.id === match.away_team_id) || { name_en: match.away_team_name, flag: '' };
 
-  // 3. LÓGICA DE ESTADO Y MARCADOR (Ajustada a tus datos reales)
-  // Usamos 'time_elapsed' y los campos directos de score
-const homeScore = match.home_score ?? 0;
-  const awayScore = match.away_score ?? 0;
-  
-  // Convertimos a string por seguridad y limpiamos espacios
+  // Lógica de estado
   const isFinished = String(match.finished).toUpperCase() === "TRUE" || match.time_elapsed === "finished";
   const isLive = match.time_elapsed !== "notstarted" && !isFinished;
-
-  // --- LOG DE VERIFICACIÓN (Solo para depurar, puedes quitarlo luego) ---
-  console.log("Valores reales -> finished:", match.finished, "time_elapsed:", match.time_elapsed);
-  console.log("Evaluación -> isFinished:", isFinished, "isLive:", isLive);
+  
+  // Siempre mostramos el marcador si ya empezó o terminó. 
+  // Si quieres mostrar 0-0 en los próximos partidos, cambia esta línea a: const showScore = true;
+  const showScore = isFinished || isLive; 
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-[#1a1c21] text-white rounded-lg">
@@ -34,10 +27,10 @@ const homeScore = match.home_score ?? 0;
             <span className="text-xl font-bold">{match.home_team_name}</span>
           </div>
 
-          {/* Marcador dinámico */}
+          {/* Marcador Central */}
           <div className="text-4xl font-black">
-            {(isFinished || isLive) ? (
-              <span>{homeScore} - {awayScore}</span>
+            {showScore ? (
+              <span>{match.home_score ?? 0} - {match.away_score ?? 0}</span>
             ) : (
               <span className="text-2xl text-gray-500">VS</span>
             )}
@@ -53,9 +46,12 @@ const homeScore = match.home_score ?? 0;
         <p className="text-sm font-medium uppercase text-gray-400">
           {isFinished ? 'FINALIZADO' : isLive ? 'EN VIVO' : 'PRÓXIMO PARTIDO'}
         </p>
+        <p className="text-xs text-gray-500 mt-1">
+          {match.local_date}
+        </p>
       </div>
       
-      {/* Formación Inicial */}
+      {/* Alineaciones (Se renderizan siempre con los datos que lleguen) */}
       <h2 className="text-lg font-bold mb-4 uppercase text-gray-400">Formación Inicial</h2>
       <div className="grid grid-cols-2 gap-8">
         <div className="space-y-2">
@@ -66,7 +62,6 @@ const homeScore = match.home_score ?? 0;
         </div>
       </div>
 
-      {/* Suplentes */}
       <h2 className="text-lg font-bold mt-8 mb-4 uppercase text-gray-400">Suplentes</h2>
       <div className="grid grid-cols-2 gap-8">
         <div className="space-y-2">
