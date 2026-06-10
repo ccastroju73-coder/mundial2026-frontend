@@ -36,11 +36,17 @@ export default function MatchDetail({ matches }) {
     }
   }, [match, setInitialData]);
 
-  useEffect(() => {
-    if (match && !isDataLoaded) {
-      loadAll();
-    }
-  }, [match, isDataLoaded, loadAll]);
+    useEffect(() => {
+       console.log("Estado actual de matchStore:", matchStore);
+       console.log("¿Hay match?", !!match);
+  
+       if (match && !isDataLoaded) {
+         console.log("Iniciando carga de datos para:", match._id);
+         loadAll();
+       } else if (isDataLoaded) {
+         console.log("Datos ya cargados, no se necesita fetch.");
+      }
+     }, [match, isDataLoaded, loadAll]);
 
   if (!match) return <div className="text-white p-10">Partido no encontrado</div>;
 
