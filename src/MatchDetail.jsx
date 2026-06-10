@@ -66,18 +66,19 @@ export default function MatchDetail({ matches }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* SquadList ahora usa correctamente el objeto coaches importado */}
-          <SquadList 
-            title={`Alineación ${home?.name}`} 
-            players={matchData.titulares_home} 
-            teamId={match.home_team_id}
-            coachName={coaches[match.home_team_id]} 
-          />
-          <SquadList 
-            title={`Alineación ${away?.name}`} 
-            players={matchData.titulares_away} 
-            teamId={match.away_team_id}
-            coachName={coaches[match.away_team_id]} 
-          />
+// En lugar de matchData.titulares_home, usa:
+<SquadList 
+  title={`Alineación ${home?.name}`} 
+  players={matchData?.titulares_home || []} 
+  teamId={match.home_team_id}
+  coachName={coaches[match.home_team_id]} 
+/>
+<SquadList 
+  title={`Alineación ${away?.name}`} 
+  players={matchData?.titulares_away || []} 
+  teamId={match.away_team_id}
+  coachName={coaches[match.away_team_id]} 
+/>
         </div>
       )}
     </div>
