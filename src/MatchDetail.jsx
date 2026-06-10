@@ -11,7 +11,12 @@ export default function MatchDetail({ matches }) {
   const match = matches.find(m => m._id === id);
 
   // Verificamos si ya hay datos cargados en el store
-  const isDataLoaded = matchStore?.titulares_home && matchStore.titulares_home.length > 0;
+  // --- CORRECCIÓN EN MATCHDETAIL.JSX ---
+// En lugar de verificar solo titulares_home, verificamos si matchStore tiene datos de cualquiera de los dos.
+const isDataLoaded = matchStore?.titulares_home?.length > 0 || matchStore?.titulares_away?.length > 0;
+
+// OJO: Si al poner esto sigue sin mostrarse, prueba comentando el if(loading) 
+// y renderiza siempre el LineupComponent para ver si el error es el componente mismo.
   const loading = !isDataLoaded;
 
   const loadAll = useCallback(async () => {
@@ -60,24 +65,23 @@ export default function MatchDetail({ matches }) {
     return <div className="text-white p-10 text-center">Partido no encontrado</div>;
   }
 
+// ... resto del código
+
   return (
     <div className="min-h-screen bg-[#05070a] text-white p-4 md:p-12">
-      <button 
-        onClick={() => navigate('/')} 
-        className="text-gray-400 hover:text-white mb-8 transition-colors"
-      >
-        ← Volver a Inicio
-      </button>
+      <button onClick={() => navigate('/')}>← Volver</button>
+      
+      <div className="text-yellow-500">
+        Titulares Home cargados: {matchStore?.titulares_home?.length || 0}
+      </div>
 
       {loading ? (
-        <div className="text-center p-10 text-gray-500 animate-pulse">Cargando alineaciones...</div>
+        <div className="text-center p-10 text-gray-500">Cargando alineaciones...</div>
       ) : (
-        <div className="max-w-4xl mx-auto">
-          <LineupComponent 
-            homePlayers={matchStore.titulares_home || []} 
-            awayPlayers={matchStore.titulares_away || []} 
-          />
-        </div>
+        <LineupComponent 
+          homePlayers={matchStore.titulares_home || []} 
+          awayPlayers={matchStore.titulares_away || []} 
+        />
       )}
     </div>
   );
