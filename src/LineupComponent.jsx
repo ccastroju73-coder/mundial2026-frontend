@@ -13,16 +13,16 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
 
   // 3. LÓGICA DE ESTADO Y MARCADOR (Ajustada a tus datos reales)
   // Usamos 'time_elapsed' y los campos directos de score
-  const homeScore = match.home_score ?? 0;
+const homeScore = match.home_score ?? 0;
   const awayScore = match.away_score ?? 0;
   
-  // El partido está terminado si 'finished' es "TRUE" o 'time_elapsed' es "finished"
-  const isFinished = match.finished === "TRUE";
+  // Convertimos a string por seguridad y limpiamos espacios
+  const isFinished = String(match.finished).toUpperCase() === "TRUE" || match.time_elapsed === "finished";
   const isLive = match.time_elapsed !== "notstarted" && !isFinished;
 
-  // --- LOG DE VERIFICACIÓN ---
-  console.log("¿Es partido finalizado?:", isFinished);
-  console.log("¿Es partido en vivo?:", isLive);
+  // --- LOG DE VERIFICACIÓN (Solo para depurar, puedes quitarlo luego) ---
+  console.log("Valores reales -> finished:", match.finished, "time_elapsed:", match.time_elapsed);
+  console.log("Evaluación -> isFinished:", isFinished, "isLive:", isLive);
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-[#1a1c21] text-white rounded-lg">
