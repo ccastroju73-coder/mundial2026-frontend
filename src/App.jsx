@@ -5,6 +5,7 @@ import Home from './Home';
 import FullFixture from './FullFixture';
 import MatchDetail from './MatchDetail';
 import LineupComponent from './LineupComponent';
+import Resultados from './Resultados';
 
 function App() {
   const [matches, setMatches] = useState([]);
@@ -37,6 +38,7 @@ function App() {
           <Route path="/partido/:id" element={<MatchDetail matches={matches} />} />
           {/* RUTA CORREGIDA: Incluye los datos y es única */}
           <Route path="/partido/:id/lineup" element={<LineupComponent matches={matches} />} />
+          <Route path="/resumen" element={<Resultados matches={matches} />} />
         </Routes>
       </div>
     </BrowserRouter>
