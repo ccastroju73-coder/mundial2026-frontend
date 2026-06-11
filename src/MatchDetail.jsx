@@ -43,6 +43,9 @@ export default function MatchDetail({ matches }) {
 
   if (!match) return <div className="text-white p-10 text-center">Partido no encontrado</div>;
 
+  console.log("¿Qué hay en teams?:", teams);
+  console.log("¿Match tiene IDs correctos?:", match.home_team_id, match.away_team_id);
+  
   return (
     <div className="min-h-screen bg-[#05070a] text-white p-4 md:p-12">
       <button onClick={() => navigate('/')}>← Volver</button>
@@ -55,7 +58,7 @@ export default function MatchDetail({ matches }) {
           homeBench={matchStore.banca_home || []}
           awayBench={matchStore.banca_away || []}
           match={match}
-          teams={Object.values(teams)}
+          teams={Array.isArray(teams) ? teams : Object.values(teams)}
         />
       )}
     </div>
