@@ -32,31 +32,23 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
         <p className="text-sm font-bold uppercase text-[#22c55e]">{isFinished ? 'FINALIZADO' : isLive ? 'EN VIVO' : 'PRÓXIMO PARTIDO'}</p>
       </div>
 
-      {/* --- BLOQUE DE BOTONES CORREGIDO --- */}
-      <div className="flex w-full border-b border-gray-700 bg-gray-900 mt-4 mb-4" style={{ height: '60px', display: 'flex' }}>
-          <button 
-               onClick={() => setActiveTab('alineaciones')} 
-               className="flex-1 text-white font-bold border-r border-gray-700 uppercase"
-               style={{ display: 'block' }}
-        >
-              ALINEACIONES
-          </button>
-          <button 
-               onClick={() => setActiveTab('estadisticas')} 
-               className="flex-1 text-white font-bold uppercase"
-               style={{ display: 'block' }}
-          >
-              ESTADÍSTICAS
-         </button>
-        </div>
+       {/* CONTENEDOR DE PESTAÑAS (Contenedor 2) */}
+       <div className="bg-[#0b0e14] rounded-2xl p-6 border border-white/5 shadow-2xl">
+      
+          {/* BOTONES (Integrados aquí para que siempre se vean) */}
+          <div className="flex justify-center gap-8 mb-8 border-b border-white/10 pb-4">
+              <button onClick={() => setActiveTab('alineaciones')} className="...">Alineaciones</button>
+              <button onClick={() => setActiveTab('estadisticas')} className="...">Estadísticas</button>
+          </div>
 
-      {/* Contenido Dinámico */}
-      {activeTab === 'alineaciones' ? (
-        <LineupView homePlayers={homePlayers} awayPlayers={awayPlayers} homeBench={homeBench} awayBench={awayBench} homeCoach={homeCoach} awayCoach={awayCoach} />
-      ) : (
-        <StatsView stats={stats} />
-      )}
-    </div>
+          {/* Contenido Dinámico */}
+          {activeTab === 'alineaciones' ? (
+               <LineupView homePlayers={homePlayers} awayPlayers={awayPlayers} homeBench={homeBench} awayBench={awayBench} homeCoach={homeCoach} awayCoach={awayCoach} />
+          ) : (
+               <StatsView stats={stats} />
+          )}
+        </div>
+     </div>
   );
 }
 
