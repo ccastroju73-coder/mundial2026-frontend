@@ -1,16 +1,26 @@
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { coaches } from './coaches';
 
 // --- COMPONENTE PRINCIPAL ---
-export default function LineupComponent({ homePlayers = [], awayPlayers = [], homeBench = [], awayBench = [], match, teams = {}, stats = [] }) {
+// Cambiamos 'match' por 'initialMatch' en los props para evitar conflictos
+export default function LineupComponent({ matches = [], homePlayers = [], awayPlayers = [], homeBench = [], awayBench = [], initialMatch = null, teams = {}, stats = [] }) {
+  const { id } = useParams();
+  
+  // Buscamos el partido en la lista global 'matches' usando el id de la URL
+  const selectedMatch = matches.find(m => String(m.id) === String(id)) || initialMatch;
   const [activeTab, setActiveTab] = useState('alineaciones');
 
-  if (!match) return <div className="text-white p-10 text-center">Cargando datos...</div>;
+  if (!selectedMatch) return <div className="text-white p-10 text-center">Cargando datos...</div>;
 
-  const homeTeamData = teams[match.home_team_id] || { name: match.home_team_name, flag: '' };
-  const awayTeamData = teams[match.away_team_id] || { name: match.away_team_name, flag: '' };
-  const homeCoach = coaches[match.home_team_id] || "DT no asignado";
-  const awayCoach = coaches[match.away_team_id] || "DT no asignado";
+  const homeTeamData = teams[selectedMatch.home_team_id] || { name: selectedMatch.home_team_name, flag: '' };
+  const awayTeamData = teams[selectedMatch.away_team_id] || { name: selectedMatch.away_team_name, flag: '' };
+  const homeCoach = coaches[selectedMatch.home_team_id] || "DT no asignado";
+  const awayCoach = coaches[selectedMatch.away_team_id] || "DT no asignado";
+
+  // Usamos los datos del partido seleccionado, o los que vienen por defecto
+  const displayHomePlayers = selectedMatch.home_players || homePlayers;
+  const displayAwayPlayers = selectedMatch.away_players || awayPlayers;
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-[#05070a] text-white">
@@ -26,7 +36,14 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
 
         <div className="mt-10">
           {activeTab === 'alineaciones' ? (
-            <LineupView homePlayers={homePlayers} awayPlayers={awayPlayers} homeBench={homeBench} awayBench={awayBench} homeCoach={homeCoach} awayCoach={awayCoach} />
+            <LineupView 
+              homePlayers={displayHomePlayers} 
+              awayPlayers={displayAwayPlayers} 
+              homeBench={homeBench} 
+              awayBench={awayBench} 
+              homeCoach={homeCoach} 
+              awayCoach={awayCoach} 
+            />
           ) : (
             <StatsView stats={stats} />
           )}
