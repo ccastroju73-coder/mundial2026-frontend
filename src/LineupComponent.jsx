@@ -32,21 +32,23 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
         <p className="text-sm font-bold uppercase text-[#22c55e]">{isFinished ? 'FINALIZADO' : isLive ? 'EN VIVO' : 'PRÓXIMO PARTIDO'}</p>
       </div>
 
-      {/* Botones */}
-      <div className="flex justify-center gap-8 mb-8 border-b border-white/10 pb-4 bg-red-500">
-         <button 
-           onClick={() => setActiveTab('alineaciones')} 
-           className="text-white font-bold p-4"
+      {/* --- BLOQUE DE BOTONES CORREGIDO --- */}
+      <div className="flex w-full border-b border-gray-700 bg-gray-900 mt-4 mb-4" style={{ height: '60px', display: 'flex' }}>
+          <button 
+               onClick={() => setActiveTab('alineaciones')} 
+               className="flex-1 text-white font-bold border-r border-gray-700 uppercase"
+               style={{ display: 'block' }}
         >
-          ALINEACIONES
+              ALINEACIONES
+          </button>
+          <button 
+               onClick={() => setActiveTab('estadisticas')} 
+               className="flex-1 text-white font-bold uppercase"
+               style={{ display: 'block' }}
+          >
+              ESTADÍSTICAS
          </button>
-         <button 
-           onClick={() => setActiveTab('estadisticas')} 
-           className="text-white font-bold p-4"
-        >
-          ESTADÍSTICAS
-        </button>
-      </div>
+        </div>
 
       {/* Contenido Dinámico */}
       {activeTab === 'alineaciones' ? (
