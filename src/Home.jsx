@@ -79,6 +79,17 @@ export default function Home({ matches }) {
   </p>
 
   {/* Fila 4: Badge */}
+<div className="flex items-center justify-center gap-4">
+  
+  {/* NUEVO BOTÓN: Enlazando a /resumen */}
+  <button 
+    onClick={() => window.location.href = '/resumen'}
+    className="px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-full text-[10px] font-bold text-green-400 hover:bg-green-500/20 transition-all uppercase tracking-wider"
+  >
+    Ver Resumen
+  </button>
+
+  {/* TU COMPONENTE ACTUAL DE JORNADA */}
   <div className="group relative cursor-pointer">
     <div className="absolute -inset-0.5 bg-gradient-to-r from-green-500 to-emerald-700 rounded-full blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
     <div className="relative bg-black px-6 py-2 rounded-full border border-green-500/20 shadow-xl">
@@ -87,7 +98,8 @@ export default function Home({ matches }) {
       </span>
     </div>
   </div>
-</header>
+
+</div></header>
 
 {/* CONTENIDO PRINCIPAL */}
       <div className="p-8 max-w-6xl mx-auto">
