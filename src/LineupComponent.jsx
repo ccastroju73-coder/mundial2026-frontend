@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { coaches } from './coaches';
 
+// --- COMPONENTE PRINCIPAL ---
 export default function LineupComponent({ homePlayers = [], awayPlayers = [], homeBench = [], awayBench = [], match, teams = {}, stats = [] }) {
   const [activeTab, setActiveTab] = useState('alineaciones');
 
   if (!match) return <div className="text-white p-10 text-center">Cargando datos...</div>;
 
-  // Estas variables se usan en el renderizado principal
   const homeTeamData = teams[match.home_team_id] || { name: match.home_team_name, flag: '' };
   const awayTeamData = teams[match.away_team_id] || { name: match.away_team_name, flag: '' };
   const homeCoach = coaches[match.home_team_id] || "DT no asignado";
@@ -14,29 +14,19 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-[#05070a] text-white">
-      {/* CABECERA (Usamos homeTeamData y awayTeamData aquí) */}
       <div className="bg-[#0f1115] p-8 rounded-3xl border border-white/10 shadow-2xl mb-8 text-center">
         <h1 className="text-2xl font-bold">{homeTeamData.name} vs {awayTeamData.name}</h1>
       </div>
 
-      {/* CONTENEDOR DE PESTAÑAS */}
       <div className="bg-[#0b0e14] rounded-2xl p-6 border border-white/5 shadow-2xl mt-8">
         <div className="flex justify-center gap-10 mb-10 border-b border-white/20 pb-4">
-           <button onClick={() => setActiveTab('alineaciones')} className={`text-xl font-bold uppercase ${activeTab === 'alineaciones' ? 'text-white' : 'text-gray-500'}`}>Alineaciones</button>
-           <button onClick={() => setActiveTab('estadisticas')} className={`text-xl font-bold uppercase ${activeTab === 'estadisticas' ? 'text-white' : 'text-gray-500'}`}>Estadísticas ({stats.length})</button>
+           <button onClick={() => setActiveTab('alineaciones')} className={`text-xl font-bold uppercase ${activeTab === 'alineaciones' ? 'text-white border-b-2' : 'text-gray-500'}`}>Alineaciones</button>
+           <button onClick={() => setActiveTab('estadisticas')} className={`text-xl font-bold uppercase ${activeTab === 'estadisticas' ? 'text-white border-b-2' : 'text-gray-500'}`}>Estadísticas</button>
         </div>
 
-        {/* CONTENIDO (Aquí usamos TODAS las props: homePlayers, awayPlayers, etc.) */}
         <div className="mt-10">
           {activeTab === 'alineaciones' ? (
-            <LineupView 
-              homePlayers={homePlayers} 
-              awayPlayers={awayPlayers} 
-              homeBench={homeBench} 
-              awayBench={awayBench} 
-              homeCoach={homeCoach} 
-              awayCoach={awayCoach} 
-            />
+            <LineupView homePlayers={homePlayers} awayPlayers={awayPlayers} homeBench={homeBench} awayBench={awayBench} homeCoach={homeCoach} awayCoach={awayCoach} />
           ) : (
             <StatsView stats={stats} />
           )}
@@ -46,18 +36,63 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
   );
 }
 
-// Este componente ahora usa todas sus props, eliminando los errores de "never used"
+// --- VISTAS AUXILIARES ---
 function LineupView({ homePlayers, awayPlayers, homeBench, awayBench, homeCoach, awayCoach }) {
   return (
-    <div>
-        {/* Renderizado de jugadores para que el Linter vea que se usan */}
-        <p>Titulares: {homePlayers.length + awayPlayers.length} jugadores</p>
-        <p>Suplentes: {homeBench.length + awayBench.length} jugadores</p>
-        <p>DTs: {homeCoach}, {awayCoach}</p>
-    </div>
+    <>
+      <h2 className="text-white text-center text-sm font-bold tracking-widest uppercase mb-6">Formación Inicial</h2>
+      <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+        <div className="space-y-1">
+          {homePlayers.map(p => (
+            <div key={p.id} className="flex items-center gap-3 p-2 hover:bg-white/5 rounded-lg">
+              <span className="w-7 h-7 flex items-center justify-center bg-[#1e2329] rounded-full text-xs font-bold text-white shadow-md">{p.jersey_number}</span>
+              <span className="text-sm text-gray-200">{p.name}</span>
+            </div>
+          ))}
+        </div>
+        <div className="space-y-1">
+          {awayPlayers.map(p => (
+            <div key={p.id} className="flex items-center gap-3 p-2 justify-end hover:bg-white/5 rounded-lg">
+              <span className="text-sm text-gray-200">{p.name}</span>
+              <span className="w-7 h-7 flex items-center justify-center bg-[#1e2329] rounded-full text-xs font-bold text-white shadow-md">{p.jersey_number}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-6 mt-8 mb-6">
+        <div className="bg-[#0f1115] rounded-xl p-4 border border-white/5">
+          <h3 className="text-center text-xs font-bold uppercase text-gray-400 mb-3">Suplentes</h3>
+          {homeBench.map(p => <div key={p.id} className="text-sm py-1 text-gray-300">{p.name}</div>)}
+        </div>
+        <div className="bg-[#0f1115] rounded-xl p-4 border border-white/5">
+          <h3 className="text-center text-xs font-bold uppercase text-gray-400 mb-3">Suplentes</h3>
+          {awayBench.map(p => <div key={p.id} className="text-sm py-1 text-gray-300 text-right">{p.name}</div>)}
+        </div>
+      </div>
+      <div className="pt-6 border-t border-white/10 flex justify-between text-xs uppercase text-gray-500">
+        <span>DT Local: {homeCoach}</span>
+        <span>DT Visitante: {awayCoach}</span>
+      </div>
+    </>
   );
 }
 
 function StatsView({ stats }) {
-  return <div>Estadísticas totales: {stats.length}</div>;
+  return (
+    <div className="space-y-6">
+      {stats.length > 0 ? stats.map((s, i) => (
+        <div key={i}>
+          <div className="flex justify-between text-sm mb-1 font-bold">
+            <span className="text-white">{s.home}</span>
+            <span className="text-gray-400 uppercase text-xs">{s.label}</span>
+            <span className="text-white">{s.away}</span>
+          </div>
+          <div className="h-1.5 bg-gray-800 rounded-full flex overflow-hidden">
+            <div style={{ width: `${(s.home / (s.home + s.away || 1)) * 100}%` }} className="bg-blue-500 h-full"></div>
+            <div style={{ width: `${(s.away / (s.home + s.away || 1)) * 100}%` }} className="bg-red-500 h-full"></div>
+          </div>
+        </div>
+      )) : <p className="text-center text-gray-500">No hay estadísticas disponibles</p>}
+    </div>
+  );
 }

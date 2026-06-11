@@ -4,6 +4,7 @@ import axios from 'axios';
 import Home from './Home';
 import FullFixture from './FullFixture';
 import MatchDetail from './MatchDetail';
+import LineupComponent from './LineupComponent';
 
 function App() {
   const [matches, setMatches] = useState([]);
@@ -12,7 +13,6 @@ function App() {
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        // Usamos la variable de entorno aquí
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/matches`);
         setMatches(response.data);
       } catch (err) {
@@ -21,7 +21,6 @@ function App() {
         setLoading(false);
       }
     };
-    
     fetchMatches();
   }, []);
 
@@ -36,6 +35,8 @@ function App() {
           <Route path="/" element={<Home matches={matches} />} />
           <Route path="/calendario" element={<FullFixture matches={matches} />} />
           <Route path="/partido/:id" element={<MatchDetail matches={matches} />} />
+          {/* RUTA CORREGIDA: Incluye los datos y es única */}
+          <Route path="/partido/:id/lineup" element={<LineupComponent matches={matches} />} />
         </Routes>
       </div>
     </BrowserRouter>
