@@ -4,6 +4,8 @@ import { useMatchStore } from "./store/useMatchStore";
 import LineupComponent from './LineupView';
 import { teams } from './teamsData';
 
+\\cambios sincronizacion
+
 export default function MatchDetail({ matches }) {
   const { id } = useParams();
   const navigate = useNavigate();
