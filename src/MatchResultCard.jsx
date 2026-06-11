@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'; // 1. Importa Link
 import { teams } from './teamsData'; // Asegúrate de importar tu fuente de datos
 
 export default function MatchResultCard({ match }) {
@@ -11,6 +12,10 @@ export default function MatchResultCard({ match }) {
   const statusText = isFinished ? "Finalizado" : (isLive ? "En Vivo" : "Programado");
 
   return (
+    <Link 
+      to={`/partido/${match.id || match._id}`} 
+      className="block transition-transform hover:scale-[1.02] duration-200"
+    >
     <div className={`bg-[#0b0e14] p-6 rounded-2xl border-t-4 ${statusColor} border-white/5 shadow-xl`}>
       <div className={`text-[10px] font-bold uppercase tracking-widest mb-4 ${isFinished ? "text-gray-500" : (isLive ? "text-red-500" : "text-green-500")}`}>
         {statusText}
@@ -39,5 +44,6 @@ export default function MatchResultCard({ match }) {
         {match.local_date}
       </div>
     </div>
+   </Link>
   );
 }
