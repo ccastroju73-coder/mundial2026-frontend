@@ -15,32 +15,36 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
   return (
     <div className="max-w-4xl mx-auto p-6 bg-[#05070a] text-white">
       
-      {/* Cabecera con Marcador y Estado */}
-      <div className="bg-[#0f1115] p-8 rounded-3xl border border-white/10 shadow-2xl mb-8 text-center">
-        <div className="flex justify-between items-center mb-6">
-          {/* Equipo Local */}
-          <div className="flex flex-col items-center gap-4">
+    {/* Cabecera con Marcador y Equipos */}
+    <div className="bg-[#0f1115] p-8 rounded-3xl border border-white/10 shadow-2xl mb-8 text-center">
+        <div className="flex justify-between items-start mb-6">
+    
+        {/* Equipo Local - Usamos w-1/3 para que cada lado tenga espacio */}
+        <div className="flex flex-col items-center gap-2 w-1/3">
             <img src={homeTeamData.flag} className="w-20 h-14 object-cover rounded-md shadow-lg" />
-            <span className="text-xl font-bold">{homeTeamData.name_en}</span>
-          </div>
-
-          <div className="text-5xl font-black text-white/90 font-mono">
-            {match.home_score ?? 0} - {match.away_score ?? 0}
-          </div>
-
-          {/* Equipo Visitante */}
-          <div className="flex flex-col items-center gap-4">
-            <img src={awayTeamData.flag} className="w-20 h-14 object-cover rounded-md shadow-lg" />
-            <span className="text-xl font-bold">{awayTeamData.name_en}</span>
-          </div>
+            <span className="text-lg font-bold text-white break-words mt-2">{homeTeamData.name_en}</span>
         </div>
 
-        {/* Estado del partido */}
-        <p className="text-sm font-bold uppercase tracking-widest text-[#22c55e]">
-          {isFinished ? 'FINALIZADO' : isLive ? 'EN VIVO' : 'PRÓXIMO PARTIDO'}
-        </p>
-      </div>
-      
+        {/* Marcador */}
+        <div className="flex items-center justify-center w-1/3 pt-4">
+           <div className="text-5xl font-black text-white/90 font-mono">
+           {match.home_score ?? 0} - {match.away_score ?? 0}
+        </div>
+     </div>
+
+       {/* Equipo Visitante */}
+       <div className="flex flex-col items-center gap-2 w-1/3">
+          <img src={awayTeamData.flag} className="w-20 h-14 object-cover rounded-md shadow-lg" />
+          <span className="text-lg font-bold text-white break-words mt-2">{awayTeamData.name_en}</span>
+       </div>
+    </div>
+
+    {/* Estado del partido */}
+    <p className="text-sm font-bold uppercase tracking-widest text-[#22c55e] mt-4">
+        {isFinished ? 'FINALIZADO' : isLive ? 'EN VIVO' : 'PRÓXIMO PARTIDO'}
+    </p>
+</div>
+
       {/* Alineaciones */}
       <div className="bg-[#0b0e14] rounded-2xl p-6 border border-white/5 shadow-2xl mb-6">
         <h2 className="text-white text-center text-sm font-bold tracking-widest uppercase mb-6">Formación Inicial</h2>
