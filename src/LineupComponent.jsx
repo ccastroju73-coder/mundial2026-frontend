@@ -33,9 +33,19 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
       </div>
 
       {/* Botones */}
-      <div className="flex justify-center gap-8 mb-8 border-b border-white/10 pb-4">
-        <button onClick={() => setActiveTab('alineaciones')} className={`text-lg font-bold uppercase ${activeTab === 'alineaciones' ? 'text-white border-b-2' : 'text-gray-500'}`}>Alineaciones</button>
-        <button onClick={() => setActiveTab('estadisticas')} className={`text-lg font-bold uppercase ${activeTab === 'estadisticas' ? 'text-white border-b-2' : 'text-gray-500'}`}>Estadísticas</button>
+      <div className="flex justify-center gap-8 mb-8 border-b border-white/10 pb-4 bg-red-500">
+         <button 
+           onClick={() => setActiveTab('alineaciones')} 
+           className="text-white font-bold p-4"
+        >
+          ALINEACIONES
+         </button>
+         <button 
+           onClick={() => setActiveTab('estadisticas')} 
+           className="text-white font-bold p-4"
+        >
+          ESTADÍSTICAS
+        </button>
       </div>
 
       {/* Contenido Dinámico */}
