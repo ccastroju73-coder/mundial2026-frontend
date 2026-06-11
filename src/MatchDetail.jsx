@@ -21,6 +21,10 @@ export default function MatchDetail({ matches }) {
       const fetchSquad = async (teamId) => {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/players/${teamId}`);
         const rawData = await response.json();
+
+        console.log(`Datos recibidos para el equipo ${teamId}:`, rawData);
+
+        
         const data = Array.isArray(rawData) ? rawData[0] : rawData;
         const players = data?.squad || [];
         return Array.isArray(players) ? players.sort((a, b) => a.jersey_number - b.jersey_number) : [];
