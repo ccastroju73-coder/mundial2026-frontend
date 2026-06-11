@@ -9,9 +9,9 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
   console.log("Equipo Local:", teams[match.home_team_id]);
   console.log("Equipo Visitante:", teams[match.away_team_id]);
 
-  const homeTeamData = teams[match.home_team_id] || { name_en: match.home_team_name, flag: '' };
-  const awayTeamData = teams[match.away_team_id] || { name_en: match.away_team_name, flag: '' };
-
+  const homeTeamData = teams[match.home_team_id] || { name: match.home_team_name, flag: '' }; 
+  const awayTeamData = teams[match.away_team_id] || { name: match.away_team_name, flag: '' };
+  
   const homeCoach = coaches[match.home_team_id] || "DT no asignado";
   const awayCoach = coaches[match.away_team_id] || "DT no asignado";
   
@@ -25,21 +25,25 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
     <div className="bg-[#0f1115] p-8 rounded-3xl border border-white/10 shadow-2xl mb-8 text-center">
     <div className="flex justify-between items-center mb-6">
     
-    {/* Bloque Local - Bandera y Nombre centrado */}
+    {/* Bloque Local */}
     <div className="flex flex-col items-center gap-2 flex-1">
-      <img src={homeTeamData.flag} className="w-20 h-14 object-cover rounded-md shadow-lg" />
-      <span className="text-xl font-bold text-white mt-2">{homeTeamData.name_en}</span>
+        <img src={homeTeamData.flag} className="w-20 h-14 object-cover rounded-md shadow-lg" />
+        <span className="text-xl font-bold text-white mt-2">
+           {homeTeamData.name || homeTeamData.name_en}
+        </span>
     </div>
 
-    {/* Marcador - Fijo en el centro */}
+    {/* Marcador */}
     <div className="text-5xl font-black text-white/90 font-mono px-6">
-      {match.home_score ?? 0} - {match.away_score ?? 0}
+        {match.home_score ?? 0} - {match.away_score ?? 0}
     </div>
 
-    {/* Bloque Visitante - Bandera y Nombre centrado */}
+    {/* Bloque Visitante */}
     <div className="flex flex-col items-center gap-2 flex-1">
-      <img src={awayTeamData.flag} className="w-20 h-14 object-cover rounded-md shadow-lg" />
-      <span className="text-xl font-bold text-white mt-2">{awayTeamData.name_en}</span>
+        <img src={awayTeamData.flag} className="w-20 h-14 object-cover rounded-md shadow-lg" />
+        <span className="text-xl font-bold text-white mt-2">
+            {awayTeamData.name || awayTeamData.name_en}
+        </span> 
     </div>
   </div>
 
