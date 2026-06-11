@@ -14,6 +14,7 @@ export default function MatchDetail({ matches }) {
   const match = matches.find(m => m._id === id || m.id === id);
 
   // Mantenemos la lógica de carga
+  // para que pueda actualizarse cada 30 segundos mientras el usuario esté en esta vista
   const loadAll = useCallback(async (targetMatch) => {
     if (!targetMatch) return;
     try {
