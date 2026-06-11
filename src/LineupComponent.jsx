@@ -9,16 +9,16 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
   // 2. Buscamos el equipo con seguridad
 // En lugar de safeTeams.find(...)
 // Accedemos directamente a la propiedad del objeto usando el ID
-   const homeTeamData = teams[match.home_team_id] || { 
-    name: match.home_team_name, 
-    flag: '' 
-   };
+const homeTeamData = teams[match.home_team_id] || { name: match.home_team_name, flag: '' };
+const awayTeamData = teams[match.away_team_id] || { name: match.away_team_name, flag: '' };
 
-   const awayTeamData = teams[match.away_team_id] || { 
-      name: match.away_team_name, 
-      flag: '' 
-    };
-
+// En tu JSX:
+<span className="text-xl font-bold">{homeTeamData.name || homeTeamData.name_en}</span>
+{homeTeamData.flag ? (
+    <img src={homeTeamData.flag} alt="Bandera" className="w-16 h-12 object-contain mb-2" />
+) : (
+    <div className="w-16 h-12 bg-gray-800 flex items-center justify-center text-[10px]">Sin Bandera</div>
+)}
   const homeCoach = coaches[match.home_team_id] || "DT no asignado";
   const awayCoach = coaches[match.away_team_id] || "DT no asignado";
 

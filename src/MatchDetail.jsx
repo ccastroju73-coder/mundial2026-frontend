@@ -8,14 +8,18 @@ export default function MatchDetail({ matches }) {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { match: matchStore, setInitialData } = useMatchStore();
-  const match = matches.find(m => m._id === id);
+  // 1. Extraemos resetStore aquí
+  const { match: matchStore, setInitialData, resetStore } = useMatchStore();
+  
+  // 2. Buscamos el partido (asegúrate de que el ID sea el correcto, a veces es match.id, a veces match._id)
+  const match = matches.find(m => m._id === id || m.id === id);
 
   const isDataLoaded = matchStore?.titulares_home?.length > 0 || matchStore?.titulares_away?.length > 0;
   const loading = !isDataLoaded;
 
-  const loadAll = useCallback(async () => {
-    if (!match) return;
+  // 3. Definimos loadAll ANTES de usarlo en el useEffect
+  const loadAll = useCallback(async (targetMatch) => {
+    if (!targetMatch) return;
     try {
       const fetchSquad = async (teamId) => {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/players/${teamId}`);
@@ -26,8 +30,8 @@ export default function MatchDetail({ matches }) {
       };
 
       const [homePlayers, awayPlayers] = await Promise.all([
-        fetchSquad(match.home_team_id),
-        fetchSquad(match.away_team_id)
+        fetchSquad(targetMatch.home_team_id),
+        fetchSquad(targetMatch.away_team_id)
       ]);
 
       setInitialData(homePlayers, true);
@@ -35,17 +39,18 @@ export default function MatchDetail({ matches }) {
     } catch (error) {
       console.error("Error crítico:", error);
     }
-  }, [match, setInitialData]);
+  }, [setInitialData]);
 
+  // 4. Un solo useEffect para manejar la carga y limpieza
   useEffect(() => {
-    if (match && !isDataLoaded) loadAll();
-  }, [match, isDataLoaded, loadAll]);
+    if (match) {
+      resetStore(); // Limpia los datos anteriores
+      loadAll(match); // Carga los nuevos
+    }
+  }, [id, match, resetStore, loadAll]); // Se dispara cuando cambia el ID
 
   if (!match) return <div className="text-white p-10 text-center">Partido no encontrado</div>;
 
-  console.log("¿Qué hay en teams?:", teams);
-  console.log("¿Match tiene IDs correctos?:", match.home_team_id, match.away_team_id);
-  
   return (
     <div className="min-h-screen bg-[#05070a] text-white p-4 md:p-12">
       <button onClick={() => navigate('/')}>← Volver</button>
@@ -58,7 +63,7 @@ export default function MatchDetail({ matches }) {
           homeBench={matchStore.banca_home || []}
           awayBench={matchStore.banca_away || []}
           match={match}
-          teams={Array.isArray(teams) ? teams : Object.values(teams)}
+          teams={teams} // Pasa 'teams' directamente
         />
       )}
     </div>

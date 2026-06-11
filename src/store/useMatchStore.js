@@ -11,6 +11,19 @@ export const useMatchStore = create((set) => ({
     cambios: []
   },
 
+  // ESTO ES LO QUE NECESITABAS: Limpiar el estado
+  resetStore: () => set({
+    match: {
+      titulares_home: [],
+      titulares_away: [],
+      banca_home: [],
+      banca_away: [],
+      score: { home: 0, away: 0 },
+      stats: { possession: [50, 50], shots: [0, 0], corners: [0, 0], fouls: [0, 0] },
+      cambios: []
+    }
+  }),
+
   setInitialData: (todosLosJugadores, esLocal) => set((state) => ({
     match: {
       ...state.match,
