@@ -8,16 +8,11 @@ export default function MatchDetail({ matches }) {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // 1. Extraemos resetStore aquí
   const { match: matchStore, setInitialData, resetStore } = useMatchStore();
   
-  // 2. Buscamos el partido (asegúrate de que el ID sea el correcto, a veces es match.id, a veces match._id)
   const match = matches.find(m => m._id === id || m.id === id);
 
-  const isDataLoaded = matchStore?.titulares_home?.length > 0 || matchStore?.titulares_away?.length > 0;
-  const loading = !isDataLoaded;
-
-  // 3. Definimos loadAll ANTES de usarlo en el useEffect
+  // Mantenemos la lógica de carga
   const loadAll = useCallback(async (targetMatch) => {
     if (!targetMatch) return;
     try {
@@ -37,17 +32,28 @@ export default function MatchDetail({ matches }) {
       setInitialData(homePlayers, true);
       setInitialData(awayPlayers, false);
     } catch (error) {
-      console.error("Error crítico:", error);
+      console.error("Error al actualizar datos:", error);
     }
   }, [setInitialData]);
 
-  // 4. Un solo useEffect para manejar la carga y limpieza
+  // useEffect con intervalo para refresco automático
   useEffect(() => {
     if (match) {
-      resetStore(); // Limpia los datos anteriores
-      loadAll(match); // Carga los nuevos
+      // Carga inicial
+      resetStore();
+      loadAll(match);
+
+      // Intervalo de 30 segundos (30000ms)
+      const interval = setInterval(() => {
+        loadAll(match);
+      }, 30000);
+
+      return () => clearInterval(interval); // Limpieza al desmontar
     }
-  }, [id, match, resetStore, loadAll]); // Se dispara cuando cambia el ID
+  }, [id, match, resetStore, loadAll]);
+
+  const isDataLoaded = matchStore?.titulares_home?.length > 0 || matchStore?.titulares_away?.length > 0;
+  const loading = !isDataLoaded;
 
   if (!match) return <div className="text-white p-10 text-center">Partido no encontrado</div>;
 
@@ -55,7 +61,7 @@ export default function MatchDetail({ matches }) {
     <div className="min-h-screen bg-[#05070a] text-white p-4 md:p-12">
       <button onClick={() => navigate('/')}>← Volver</button>
       {loading ? (
-        <div className="text-center p-10 text-gray-500">Cargando alineaciones...</div>
+        <div className="text-center p-10 text-gray-500">Cargando datos del partido...</div>
       ) : (
         <LineupComponent 
           homePlayers={matchStore.titulares_home || []} 
@@ -63,13 +69,12 @@ export default function MatchDetail({ matches }) {
           homeBench={matchStore.banca_home || []}
           awayBench={matchStore.banca_away || []}
           match={match}
-          teams={teams} // Pasa 'teams' directamente
-          // En el return de MatchDetail.jsx:
+          teams={teams}
           stats={[
-              { label: "Posesión", home: match.stats?.possession_home || 50, away: match.stats?.possession_away || 50 },
-              { label: "Remates", home: match.stats?.shots_home || 0, away: match.stats?.shots_away || 0 }
-         ]}
-       />
+             { label: "Posesión", home: match.stats?.possession_home || 50, away: match.stats?.possession_away || 50 },
+             { label: "Remates", home: match.stats?.shots_home || 0, away: match.stats?.shots_away || 0 }
+          ]}
+        />
       )}
     </div>
   );
