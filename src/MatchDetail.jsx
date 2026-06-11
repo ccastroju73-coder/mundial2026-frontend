@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useMatchStore } from "./store/useMatchStore";
-import LineupComponent from './LineupComponent';
+import LineupComponent from './LineupView';
 import { teams } from './teamsData';
 
 export default function MatchDetail({ matches }) {
@@ -64,7 +64,12 @@ export default function MatchDetail({ matches }) {
           awayBench={matchStore.banca_away || []}
           match={match}
           teams={teams} // Pasa 'teams' directamente
-        />
+          // En el return de MatchDetail.jsx:
+          stats={[
+              { label: "Posesión", home: match.stats?.possession_home || 50, away: match.stats?.possession_away || 50 },
+              { label: "Remates", home: match.stats?.shots_home || 0, away: match.stats?.shots_away || 0 }
+         ]}
+       />
       )}
     </div>
   );
