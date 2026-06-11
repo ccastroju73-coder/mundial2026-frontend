@@ -4,18 +4,20 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
   if (!match) return <div className="text-white p-10 text-center">Cargando datos del encuentro...</div>;
 
   // 1. Aseguramos que teams siempre sea un array, incluso si llega nulo
-  const safeTeams = Array.isArray(teams) ? teams : [];
+ // const safeTeams = Array.isArray(teams) ? teams : [];
 
   // 2. Buscamos el equipo con seguridad
-  const homeTeamData = safeTeams.find(t => t.id === match.home_team_id) || { 
-      name_en: match.home_team_name, 
+// En lugar de safeTeams.find(...)
+// Accedemos directamente a la propiedad del objeto usando el ID
+   const homeTeamData = teams[match.home_team_id] || { 
+    name: match.home_team_name, 
+    flag: '' 
+   };
+
+   const awayTeamData = teams[match.away_team_id] || { 
+      name: match.away_team_name, 
       flag: '' 
-  };
-  
-  const awayTeamData = safeTeams.find(t => t.id === match.away_team_id) || { 
-      name_en: match.away_team_name, 
-      flag: '' 
-  };
+    };
 
   const homeCoach = coaches[match.home_team_id] || "DT no asignado";
   const awayCoach = coaches[match.away_team_id] || "DT no asignado";
