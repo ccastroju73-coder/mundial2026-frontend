@@ -125,17 +125,38 @@ function LineupView({ homePlayers, awayPlayers, homeBench, awayBench, homeCoach,
 
 // COMPONENTE DE ESTADÍSTICAS
 function StatsView({ stats }) {
+  // Lista ordenada de estadísticas para que siempre aparezcan en el mismo orden
+  const statsOrder = [
+    'Remates', 'Remates al arco', 'Posesión', 'Faltas', 
+    'Tarjetas amarillas', 'Tarjetas rojas', 'Posición adelantada', 'Tiros de esquina'
+  ];
+
   return (
-    <div className="space-y-6">
-      {stats.length > 0 ? stats.map((s, i) => (
-        <div key={i}>
-          <div className="flex justify-between text-sm mb-1 font-bold"><span>{s.home}</span><span className="text-gray-400">{s.label}</span><span>{s.away}</span></div>
-          <div className="h-2 bg-gray-800 rounded-full flex overflow-hidden">
-            <div style={{ width: `${(s.home / (s.home + s.away)) * 100}%` }} className="bg-blue-500 h-full"></div>
-            <div style={{ width: `${(s.away / (s.home + s.away)) * 100}%` }} className="bg-red-500 h-full"></div>
-          </div>
-        </div>
-      )) : <p className="text-center text-gray-500">No hay estadísticas disponibles</p>}
+    <div className="bg-[#0b0e14] rounded-2xl p-8 border border-white/5 shadow-xl">
+      <h3 className="text-white text-center text-sm font-bold uppercase mb-8 tracking-widest">Estadísticas del Equipo</h3>
+      
+      <div className="space-y-6">
+        {statsOrder.map((label) => {
+          // Buscamos el valor en el array de stats recibido
+          const stat = stats.find(s => s.label === label) || { home: 0, away: 0 };
+          const total = stat.home + stat.away;
+          const homePercentage = total === 0 ? 50 : (stat.home / total) * 100;
+
+          return (
+            <div key={label}>
+              <div className="flex justify-between text-sm mb-2 font-medium">
+                <span className="text-white">{stat.home}</span>
+                <span className="text-gray-400 uppercase text-xs">{label}</span>
+                <span className="text-white">{stat.away}</span>
+              </div>
+              <div className="h-1.5 bg-gray-800 rounded-full flex overflow-hidden">
+                <div style={{ width: `${homePercentage}%` }} className="bg-blue-500 h-full"></div>
+                <div style={{ width: `${100 - homePercentage}%` }} className="bg-red-500 h-full"></div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
