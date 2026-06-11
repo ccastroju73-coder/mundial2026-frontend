@@ -86,7 +86,7 @@ export default function Home({ matches }) {
     onClick={() => window.location.href = '/resumen'}
     className="px-6 py-2 bg-[#0b0e14] border border-green-500/30 rounded-full text-[11px] font-bold text-green-400 hover:bg-green-500/10 transition-all uppercase tracking-wider"
   >
-    Ver Resumen
+    Resumen de los Partidos
   </button>
 
   {/* BOTÓN CENTRAL: Jornada (Tu componente original) */}
