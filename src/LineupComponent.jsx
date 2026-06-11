@@ -24,33 +24,34 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
   const isFinished = String(match.finished).toUpperCase() === "TRUE" || match.time_elapsed === "finished";
   const isLive = match.time_elapsed !== "notstarted" && !isFinished;
   
-  // Siempre mostramos el marcador si ya empezó o terminó. 
-  // Si quieres mostrar 0-0 en los próximos partidos, cambia esta línea a: const showScore = true;
-  const showScore = true;
-
   return (
     <div className="max-w-4xl mx-auto p-6 bg-[#1a1c21] text-white rounded-lg">
       <div className="text-center border-b border-gray-700 pb-6 mb-8">
         <div className="flex justify-center items-center gap-12 mb-6">
+  
           {/* Equipo Local */}
           <div className="flex flex-col items-center">
-            {homeTeamData.flag && <img src={homeTeamData.flag} alt={match.home_team_name} className="w-16 h-12 object-contain mb-2" />}
-            <span className="text-xl font-bold">{match.home_team_name}</span>
+             {homeTeamData.flag ? (
+               <img src={homeTeamData.flag} alt={homeTeamData.name_en} className="w-16 h-12 object-contain mb-2" />
+             ) : (
+               <div className="w-16 h-12 bg-gray-800 rounded mb-2 flex items-center justify-center text-[10px]">Sin Bandera</div>
+             )}
+             <span className="text-xl font-bold">{homeTeamData.name_en}</span>
           </div>
 
           {/* Marcador Central */}
           <div className="text-4xl font-black">
-            {showScore ? (
-              <span>{match.home_score ?? 0} - {match.away_score ?? 0}</span>
-            ) : (
-              <span className="text-2xl text-gray-500">VS</span>
-            )}
+             <span>{match.home_score ?? 0} - {match.away_score ?? 0}</span>
           </div>
 
           {/* Equipo Visitante */}
           <div className="flex flex-col items-center">
-            {awayTeamData.flag && <img src={awayTeamData.flag} alt={match.away_team_name} className="w-16 h-12 object-contain mb-2" />}
-            <span className="text-xl font-bold">{match.away_team_name}</span>
+             {awayTeamData.flag ? (
+                <img src={awayTeamData.flag} alt={awayTeamData.name_en} className="w-16 h-12 object-contain mb-2" />
+             ) : (
+                <div className="w-16 h-12 bg-gray-800 rounded mb-2 flex items-center justify-center text-[10px]">Sin Bandera</div>
+             )}
+             <span className="text-xl font-bold">{awayTeamData.name_en}</span>
           </div>
         </div>
 
@@ -62,7 +63,7 @@ export default function LineupComponent({ homePlayers = [], awayPlayers = [], ho
         </p>
       </div>
       
-      {/* Alineaciones (Se renderizan siempre con los datos que lleguen) */}
+      {/* Alineaciones */}
       <h2 className="text-lg font-bold mb-4 uppercase text-gray-400">Formación Inicial</h2>
       <div className="grid grid-cols-2 gap-8">
         <div className="space-y-2">
