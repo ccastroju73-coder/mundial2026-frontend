@@ -3,6 +3,12 @@ import { coaches } from './coaches';
 export default function LineupComponent({ homePlayers = [], awayPlayers = [], homeBench = [], awayBench = [], match, teams = {} }) {
   if (!match) return <div className="text-white p-10 text-center">Cargando datos...</div>;
 
+  // AGREGAMOS ESTE LOG PARA DEPURAR
+  console.log("Datos de teams:", teams);
+  console.log("ID Local:", match.home_team_id, "ID Visitante:", match.away_team_id);
+  console.log("Equipo Local:", teams[match.home_team_id]);
+  console.log("Equipo Visitante:", teams[match.away_team_id]);
+
   const homeTeamData = teams[match.home_team_id] || { name_en: match.home_team_name, flag: '' };
   const awayTeamData = teams[match.away_team_id] || { name_en: match.away_team_name, flag: '' };
 
