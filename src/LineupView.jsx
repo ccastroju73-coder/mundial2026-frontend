@@ -75,16 +75,49 @@ function LineupView({ homePlayers, awayPlayers, homeBench, awayBench, homeCoach,
   return (
     <>
       <h2 className="text-white text-center text-sm font-bold tracking-widest uppercase mb-6">Formación Inicial</h2>
-      <div className="grid grid-cols-2 gap-8 mb-8">
-        <div className="space-y-2">{homePlayers.map(p => <div key={p.id} className="flex items-center gap-2 text-sm">{p.jersey_number} {p.name}</div>)}</div>
-        <div className="space-y-2">{awayPlayers.map(p => <div key={p.id} className="flex items-center justify-end gap-2 text-sm">{p.name} {p.jersey_number}</div>)}</div>
+      
+      {/* Contenedor principal del grid */}
+      <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+        {/* Jugadores Locales */}
+        <div className="space-y-1">
+          {homePlayers.map(p => (
+            <div key={p.id} className="flex items-center gap-3 p-2 hover:bg-white/5 rounded-lg transition-colors">
+              <span className="w-7 h-7 flex items-center justify-center bg-[#1e2329] rounded-full text-xs font-bold text-white shadow-md">
+                {p.jersey_number}
+              </span>
+              <span className="text-sm text-gray-200 font-medium">{p.name}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Jugadores Visitantes */}
+        <div className="space-y-1">
+          {awayPlayers.map(p => (
+            <div key={p.id} className="flex items-center gap-3 p-2 justify-end hover:bg-white/5 rounded-lg transition-colors">
+              <span className="text-sm text-gray-200 font-medium">{p.name}</span>
+              <span className="w-7 h-7 flex items-center justify-center bg-[#1e2329] rounded-full text-xs font-bold text-white shadow-md">
+                {p.jersey_number}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="grid grid-cols-2 gap-6 mb-10">
-        <div className="p-4 bg-white/5 rounded-xl"><h3 className="text-center text-sm font-bold uppercase mb-2">Suplentes</h3>{homeBench.map(p => <div key={p.id} className="text-xs">{p.name}</div>)}</div>
-        <div className="p-4 bg-white/5 rounded-xl"><h3 className="text-center text-sm font-bold uppercase mb-2">Suplentes</h3>{awayBench.map(p => <div key={p.id} className="text-xs text-right">{p.name}</div>)}</div>
+
+      {/* Sección de Suplentes (diseño consistente) */}
+      <div className="grid grid-cols-2 gap-6 mt-8 mb-6">
+        <div className="bg-[#0f1115] rounded-xl p-4 border border-white/5">
+          <h3 className="text-center text-xs font-bold uppercase text-gray-400 mb-3">Suplentes</h3>
+          {homeBench.map(p => <div key={p.id} className="text-sm py-1 text-gray-300">{p.name}</div>)}
+        </div>
+        <div className="bg-[#0f1115] rounded-xl p-4 border border-white/5">
+          <h3 className="text-center text-xs font-bold uppercase text-gray-400 mb-3">Suplentes</h3>
+          {awayBench.map(p => <div key={p.id} className="text-sm py-1 text-gray-300 text-right">{p.name}</div>)}
+        </div>
       </div>
-      <div className="pt-6 border-t border-white/10 flex justify-between text-xs uppercase text-gray-400">
-        <span>DT Local: {homeCoach}</span><span>DT Visitante: {awayCoach}</span>
+
+      <div className="pt-6 border-t border-white/10 flex justify-between text-xs uppercase text-gray-500">
+        <span>DT Local: {homeCoach}</span>
+        <span>DT Visitante: {awayCoach}</span>
       </div>
     </>
   );
