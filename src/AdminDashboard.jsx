@@ -24,22 +24,22 @@ const AdminDashboard = () => {
         <div key={group._id} style={{ marginBottom: '40px' }}>
           <h2>Grupo {group.group}</h2>
           {/* Mapeamos 'teams' en lugar de 'matches' */}
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th>Equipo ID</th><th>PJ</th><th>Pts</th>
-              </tr>
-            </thead>
-            <tbody>
-              {group.teams.map(team => (
-                <tr key={team._id}>
-                  <td>{team.team_id}</td>
-                  <td>{team.mp}</td>
-                  <td>{team.pts}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <table style={{ width: '100%', marginBottom: '20px', textAlign: 'left', borderCollapse: 'collapse' }}>
+               <thead>
+                   <tr style={{ borderBottom: '1px solid #555' }}>
+      <                th>Equipo</th><th>PJ</th><th>Pts</th>
+                   </tr>
+                </thead>
+              <tbody>
+                  {group.teams.map(team => (
+                     <tr key={team._id}>
+                        <td style={{ padding: '8px' }}>{team.team_id}</td>
+                        <td>{team.mp}</td>
+                        <td>{team.pts}</td>
+                     </tr>
+                    ))}
+              </tbody>
+           </table>
         </div>
       ))}
     </div>
