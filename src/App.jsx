@@ -6,7 +6,6 @@ import FullFixture from './FullFixture';
 import MatchDetail from './MatchDetail';
 import LineupComponent from './LineupComponent';
 import Resultados from './Resultados';
-import PublicView from './PublicView';
 import AdminDashboard from './AdminDashboard';
 
 function App() {
@@ -41,7 +40,6 @@ function App() {
           {/* RUTA CORREGIDA: Incluye los datos y es única */}
           <Route path="/partido/:id/lineup" element={<LineupComponent matches={matches} />} />
           <Route path="/resumen" element={<Resultados matches={matches} />} />
-          <Route path="/" element={<PublicView />} />
           {/* Tu link secreto será: tuweb.com/admin-secreto-2026 */}
           <Route path="/admin-secreto-2026" element={<AdminDashboard />} />
         </Routes>
