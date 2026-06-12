@@ -1,46 +1,47 @@
 import { useState, useEffect } from 'react';
-import AdminMatchForm from './AdminMatchForm';
-
-// Este componente es el panel de control para el administrador, donde puede ver los grupos y actualizar los resultados de los partidos.
+// import AdminMatchForm from './AdminMatchForm';
 
 const AdminDashboard = () => {
   const [groups, setGroups] = useState([]);
 
   useEffect(() => {
-    // Definimos la función DENTRO del useEffect para cumplir con las reglas de React
     const fetchData = async () => {
       try {
         const res = await fetch('https://api-mundial-2026-iwfn.onrender.com/api/dashboard-data'); 
-        if (!res.ok) throw new Error('Error al cargar datos');
         const data = await res.json();
         setGroups(data);
       } catch (error) {
         console.error("Error:", error);
       }
     };
-
     fetchData();
-  }, []); // El array vacío [] asegura que solo se ejecute al montar el componente
+  }, []);
 
   return (
-    <div style={{ maxWidth: '1000px', margin: 'auto' }}>
+    <div style={{ maxWidth: '1000px', margin: 'auto', padding: '20px' }}>
       <h1>Panel de Control del Mundial</h1>
-      {groups && groups.length > 0 ? (
-        groups.map(group => (
-          <div key={group._id} style={{ marginBottom: '40px', borderBottom: '2px solid #ccc' }}>
-            <h2>Grupo {group.group}</h2>
-            {group.matches && group.matches.map(match => (
-              <div key={match._id} style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '10px' }}>
-                <span>{match.homeTeam}</span>
-                <AdminMatchForm match={match} onUpdate={() => window.location.reload()} />
-                <span>{match.awayTeam}</span>
-              </div>
-            ))}
-          </div>
-        ))
-      ) : (
-        <p>Cargando grupos...</p>
-      )}
+      {groups.map(group => (
+        <div key={group._id} style={{ marginBottom: '40px' }}>
+          <h2>Grupo {group.group}</h2>
+          {/* Mapeamos 'teams' en lugar de 'matches' */}
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th>Equipo ID</th><th>PJ</th><th>Pts</th>
+              </tr>
+            </thead>
+            <tbody>
+              {group.teams.map(team => (
+                <tr key={team._id}>
+                  <td>{team.team_id}</td>
+                  <td>{team.mp}</td>
+                  <td>{team.pts}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
     </div>
   );
 };
