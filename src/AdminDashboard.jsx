@@ -10,7 +10,7 @@ const AdminDashboard = () => {
     // Definimos la función DENTRO del useEffect para cumplir con las reglas de React
     const fetchData = async () => {
       try {
-        const res = await fetch('/api/dashboard-data'); 
+        const res = await fetch('https://mundial2026-frontend.onrender.com/api/dashboard-data'); 
         if (!res.ok) throw new Error('Error al cargar datos');
         const data = await res.json();
         setGroups(data);
