@@ -38,28 +38,33 @@ return (
       groups.map(group => (
         <div key={group._id} style={{ marginBottom: '40px' }}>
           <h2>Grupo {group.group}</h2>
-          <table style={{ width: '100%', marginBottom: '20px', textAlign: 'left', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid #555' }}>
-                <th>Equipo</th><th>PJ</th><th>Pts</th>
-              </tr>
-            </thead>
-            <tbody>
-              {group.teams.map(team => {
-                const info = getTeamInfo(team.team_id);
-                return (
-                  <tr key={team._id}>
-                    <td style={{ padding: '8px' }}>
-                      <img src={info.flag} alt={info.name_en} style={{ width: '25px', marginRight: '10px' }} />
-                      {info.name_en}
-                    </td>
-                    <td>{team.mp}</td>
-                    <td>{team.pts}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                <table style={{ width: '100%', marginBottom: '20px', textAlign: 'center', borderCollapse: 'collapse', color: '#fff' }}>
+                     <thead>
+                         <tr style={{ borderBottom: '1px solid #444', color: '#aaa' }}>
+                            <th style={{ textAlign: 'left', padding: '10px' }}>Equipo</th>
+                            <th>PJ</th><th>G</th><th>E</th><th>P</th><th>DG</th><th>Pts</th>
+                         </tr>
+                        </thead>
+                        <tbody>
+                            {group.teams.map(team => {
+                               const info = getTeamInfo(team.team_id);
+                               return (
+                                    <tr key={team._id} style={{ borderBottom: '1px solid #222' }}>
+                                       <td style={{ textAlign: 'left', padding: '10px' }}>
+                                           <img src={info.flag} alt={info.name_en} style={{ width: '20px', marginRight: '10px', borderRadius: '2px' }} />
+                                           {info.name_en}
+                                        </td>
+                                        <td>{team.mp}</td> {/* Partidos Jugados */}
+                                        <td>{team.w}</td>  {/* Ganados */}
+                                        <td>{team.d}</td>  {/* Empatados */}
+                                        <td>{team.l}</td>  {/* Perdidos */}
+                                        <td>{team.gd}</td> {/* Diferencia de Goles */}
+                                        <td style={{ fontWeight: 'bold', color: '#00ff00' }}>{team.pts}</td>
+                                    </tr>
+                                );
+                             })}
+                        </tbody>
+                </table>
         </div>
       ))
     ) : (
