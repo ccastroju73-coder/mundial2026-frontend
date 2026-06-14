@@ -155,7 +155,7 @@ return (
                         <td style={{ textAlign: 'center' }}>{team.d}</td>
                         <td style={{ textAlign: 'center' }}>{team.l}</td>
                         <td style={{ textAlign: 'center' }}>{team.gf}</td>
-                        <td style={{ textAlign: 'center' }}>{team.gc}</td>
+                        <td style={{ textAlign: 'center' }}>{team.ga}</td>
                         <td style={{ textAlign: 'center' }}>{team.gd}</td>
                         <td style={{ textAlign: 'center', fontWeight: 'bold', color: '#00ff00' }}>{team.pts}</td>
                       </tr>
