@@ -1,5 +1,18 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
+// --- MUEVE LOS ESTILOS AQUÍ AFUERA ---
+const tableCellStyle = { 
+  padding: '8px', 
+  textAlign: 'center', 
+  width: '30px' 
+};
+
+const teamNameStyle = { 
+  padding: '8px', 
+  textAlign: 'left', 
+  width: '150px' 
+};
+
 const MatchEditor = ({ match, onUpdate }) => {
   const [homeScore, setHomeScore] = useState(match.home_score || 0);
   const [awayScore, setAwayScore] = useState(match.away_score || 0);
@@ -39,7 +52,7 @@ const AdminDashboard = () => {
     setMatches(await matchesRes.json());
   }, []);
 
-  useEffect(() => {
+    useEffect(() => {
     let isMounted = true; // Variable de control para evitar actualizaciones si el componente se desmonta
 
     const loadData = async () => {
@@ -71,21 +84,15 @@ const AdminDashboard = () => {
     <div style={{ maxWidth: '1400px', margin: 'auto', padding: '20px' }}>
       <h1>Panel de Control del Mundial</h1>
 
-      {/* Iteramos sobre los grupos para asegurar que partidos y tabla siempre vayan juntos */}
       {groups.sort((a, b) => a.group.localeCompare(b.group)).map(group => {
         const groupMatches = groupedMatches[group.group] || [];
         
         return (
           <div key={group._id} style={{ 
-            display: 'flex', 
-            gap: '30px', 
-            marginBottom: '40px', 
-            borderBottom: '2px solid #333', 
-            paddingBottom: '30px',
-            alignItems: 'flex-start' 
+            display: 'flex', gap: '30px', marginBottom: '40px', borderBottom: '2px solid #333', 
+            paddingBottom: '30px', alignItems: 'flex-start' 
           }}>
             
-            {/* Columna Partidos */}
             <div style={{ flex: 1, backgroundColor: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
               <h4 style={{ color: '#aaa', marginBottom: '15px' }}>Grupo {group.group} - Partidos</h4>
               {groupMatches.map(match => {
@@ -110,14 +117,14 @@ const AdminDashboard = () => {
               })}
             </div>
 
-            {/* Columna Posiciones */}
             <div style={{ flex: 1, backgroundColor: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
               <h4 style={{ color: '#aaa', marginBottom: '15px' }}>Grupo {group.group} - Posiciones</h4>
-              <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', fontSize: '0.9rem' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', tableLayout: 'fixed' }}>
                 <thead>
-                  <tr style={{ color: '#aaa', borderBottom: '1px solid #333' }}>
-                    <th style={{ textAlign: 'left', padding: '8px' }}>Equipo</th>
-                    <th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th>
+                  <tr style={{ color: '#aaa', fontSize: '0.85rem', borderBottom: '1px solid #333' }}>
+                    <th style={teamNameStyle}>Equipo</th>
+                    <th style={tableCellStyle}>PJ</th><th style={tableCellStyle}>G</th><th style={tableCellStyle}>E</th>
+                    <th style={tableCellStyle}>P</th><th style={tableCellStyle}>DG</th><th style={tableCellStyle}>Pts</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -125,17 +132,19 @@ const AdminDashboard = () => {
                     const info = getTeamInfo(team.team_id);
                     return (
                       <tr key={team._id} style={{ borderBottom: '1px solid #222' }}>
-                        <td style={{ padding: '8px', display: 'flex', alignItems: 'center' }}>
-                          <img src={info.flag} style={{ width: '20px', marginRight: '8px' }} /> {info.name_en}
+                        <td style={teamNameStyle}>
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <img src={info.flag} style={{ width: '20px', marginRight: '8px' }} /> {info.name_en}
+                          </div>
                         </td>
-                        <td style={{ textAlign: 'center' }}>{team.mp}</td>
-                        <td style={{ textAlign: 'center' }}>{team.w}</td>
-                        <td style={{ textAlign: 'center' }}>{team.d}</td>
-                        <td style={{ textAlign: 'center' }}>{team.l}</td>
-                        <td style={{ textAlign: 'center' }}>{team.gf}</td>
-                        <td style={{ textAlign: 'center' }}>{team.ga}</td>
-                        <td style={{ textAlign: 'center' }}>{team.gd}</td>
-                        <td style={{ textAlign: 'center', fontWeight: 'bold', color: '#00ff00' }}>{team.pts}</td>
+                        <td style={tableCellStyle}>{team.mp}</td>
+                        <td style={tableCellStyle}>{team.w}</td>
+                        <td style={tableCellStyle}>{team.d}</td>
+                        <td style={tableCellStyle}>{team.l}</td>
+                        <td style={tableCellStyle}>{team.gd}</td>
+                        <td style={{...tableCellStyle, fontWeight: 'bold', color: '#00ff00'}}>
+                          {team.pts}
+                        </td>
                       </tr>
                     );
                   })}
