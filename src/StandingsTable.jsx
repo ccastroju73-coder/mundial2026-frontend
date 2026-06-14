@@ -23,7 +23,7 @@ const StandingsPage = () => {
               <thead>
                 <tr>
                   <th>Equipo</th>
-                  <th>PJ</th><th>G</th><th>E</th><th>P</th><th>DG</th><th>Pts</th>
+                  <th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th>
                 </tr>
               </thead>
               <tbody>
@@ -39,6 +39,8 @@ const StandingsPage = () => {
                     <td>{team.w}</td>
                     <td>{team.d}</td>
                     <td>{team.l}</td>
+                    <td>{team.gf}</td>
+                    <td>{team.ga}</td>
                     <td>{team.gd}</td>
                     <td className="pts">{team.pts}</td>
                   </tr>
