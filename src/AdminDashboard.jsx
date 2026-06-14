@@ -75,93 +75,103 @@ const AdminDashboard = () => {
     return teamsData.find(t => t.id === id) || { name_en: "Desconocido", flag: "" };
   };
 
+// ... (mantiene tus estados, useEffect, useMemo y getTeamInfo exactamente igual)
+
 return (
-    <div style={{ maxWidth: '1400px', margin: 'auto', padding: '20px' }}>
-      <h1>Panel de Control del Mundial</h1>
+  <div style={{ maxWidth: '1400px', margin: 'auto', padding: '20px' }}>
+    <h1>Panel de Control del Mundial</h1>
+    
+    <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-start' }}>
       
-      {/* Contenedor principal que envuelve ambas columnas */}
-      <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-start' }}>
-        
-        {/* Columna de Partidos */}
-        <div style={{ flex: 1 }}>
-          <h3>Partidos</h3>
-          {Object.keys(groupedMatches).sort().map(groupKey => (
-            <div key={groupKey} style={{ marginBottom: '30px', backgroundColor: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
-              <h4 style={{ color: '#aaa', marginBottom: '15px' }}>Grupo {groupKey}</h4>
-              {groupedMatches[groupKey].map(match => {
-                const homeTeam = getTeamInfo(match.home_team_id);
-                const awayTeam = getTeamInfo(match.away_team_id);
-                
-                const [datePart, time] = match.local_date.split(' ');
-                const [mm, dd, yyyy] = datePart.split('/');
-                const formattedDate = `${dd}/${mm}/${yyyy}`;
+      {/* Columna de Partidos */}
+      <div style={{ flex: 1 }}>
+        <h3>Partidos</h3>
+        {Object.keys(groupedMatches).sort().map(groupKey => (
+          <div key={groupKey} style={{ marginBottom: '30px', backgroundColor: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
+            <h4 style={{ color: '#aaa', marginBottom: '15px' }}>Grupo {groupKey}</h4>
+            {groupedMatches[groupKey].map(match => {
+              const homeTeam = getTeamInfo(match.home_team_id);
+              const awayTeam = getTeamInfo(match.away_team_id);
+              
+              const [datePart, time] = match.local_date.split(' ');
+              const [mm, dd, yyyy] = datePart.split('/');
+              const formattedDate = `${dd}/${mm}/${yyyy}`;
 
-                return (
-                  <div key={match._id} style={{ display: 'flex', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #333', fontSize: '0.9rem' }}>
-                    <span style={{ width: '40px', color: '#888' }}>#{match.id}</span>
-                    <span style={{ width: '80px', color: '#ccc' }}>{formattedDate}</span>
-                    <span style={{ width: '60px', color: '#aaa' }}>{time}</span>
-                    <div style={{ display: 'flex', alignItems: 'center', width: '200px' }}>
-                      <img src={homeTeam.flag} alt={homeTeam.name_en} style={{ width: '20px', marginRight: '8px', borderRadius: '2px' }} />
-                      {homeTeam.name_en}
-                    </div>
-                    <div style={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-                      <MatchEditor match={match} onUpdate={fetchData} />
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', width: '200px', justifyContent: 'flex-end' }}>
-                      {awayTeam.name_en}
-                      <img src={awayTeam.flag} alt={awayTeam.name_en} style={{ width: '20px', marginLeft: '8px', borderRadius: '2px' }} />
-                    </div>
+              return (
+                <div key={match._id} style={{ display: 'flex', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #333', fontSize: '0.9rem' }}>
+                  <span style={{ width: '40px', color: '#888' }}>#{match.id}</span>
+                  <span style={{ width: '80px', color: '#ccc' }}>{formattedDate}</span>
+                  <span style={{ width: '60px', color: '#aaa' }}>{time}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', width: '200px' }}>
+                    <img src={homeTeam.flag} alt={homeTeam.name_en} style={{ width: '20px', marginRight: '8px', borderRadius: '2px' }} />
+                    {homeTeam.name_en}
                   </div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
+                  <div style={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+                    <MatchEditor match={match} onUpdate={fetchData} />
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', width: '200px', justifyContent: 'flex-end' }}>
+                    {awayTeam.name_en}
+                    <img src={awayTeam.flag} alt={awayTeam.name_en} style={{ width: '20px', marginLeft: '8px', borderRadius: '2px' }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
 
-        {/* Columna de Tablas de Posiciones */}
-        <div style={{ flex: 1 }}>
-          <h3>Posiciones</h3>
-          {groups.length > 0 && teamsData.length > 0 ? (
-            groups.map(group => (
-              <div key={group._id} style={{ marginBottom: '30px', backgroundColor: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
-                <h4 style={{ color: '#aaa', marginBottom: '15px' }}>Grupo {group.group}</h4>
-                <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '1px solid #333', color: '#aaa', fontSize: '0.9rem' }}>
-                      <th style={{ textAlign: 'left', padding: '12px' }}>Equipo</th>
-                      <th>PJ</th><th>G</th><th>E</th><th>P</th><th>DG</th><th>Pts</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {group.teams.map(team => {
-                      const info = getTeamInfo(team.team_id);
-                      return (
-                        <tr key={team._id} style={{ borderBottom: '1px solid #333' }}>
-                          <td style={{ textAlign: 'left', padding: '12px', display: 'flex', alignItems: 'center' }}>
-                            <img src={info.flag} style={{ width: '24px', marginRight: '10px' }} />
-                            {info.name_en}
-                          </td>
-                          <td style={{ textAlign: 'center' }}>{team.mp}</td>
-                          <td style={{ textAlign: 'center' }}>{team.w}</td>
-                          <td style={{ textAlign: 'center' }}>{team.d}</td>
-                          <td style={{ textAlign: 'center' }}>{team.l}</td>
-                          <td style={{ textAlign: 'center' }}>{team.gd}</td>
-                          <td style={{ textAlign: 'center', fontWeight: 'bold', color: '#00ff00' }}>{team.pts}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            ))
-          ) : (
-            <p>Cargando posiciones...</p>
-          )}
-        </div>
+      {/* Columna de Posiciones */}
+      <div style={{ flex: 1 }}>
+        <h3>Posiciones</h3>
+        {groups.length > 0 && teamsData.length > 0 ? (
+          groups.map(group => (
+            <div key={group._id} style={{ marginBottom: '30px', backgroundColor: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
+              <h4 style={{ color: '#aaa', marginBottom: '15px' }}>Grupo {group.group}</h4>
+              <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff' }}>
+                <thead>
+                  <tr style={{ color: '#aaa', fontSize: '0.85rem', borderBottom: '1px solid #333' }}>
+                    <th style={{ textAlign: 'left', padding: '8px' }}>Equipo</th>
+                    <th style={{ padding: '8px' }}>PJ</th>
+                    <th style={{ padding: '8px' }}>G</th>
+                    <th style={{ padding: '8px' }}>E</th>
+                    <th style={{ padding: '8px' }}>P</th>
+                    <th style={{ padding: '8px' }}>GF</th>
+                    <th style={{ padding: '8px' }}>GC</th>
+                    <th style={{ padding: '8px' }}>DG</th>
+                    <th style={{ padding: '8px' }}>Pts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {group.teams.map(team => {
+                    const info = getTeamInfo(team.team_id);
+                    return (
+                      <tr key={team._id} style={{ borderBottom: '1px solid #222' }}>
+                        <td style={{ padding: '10px 8px', display: 'flex', alignItems: 'center' }}>
+                          <img src={info.flag} style={{ width: '20px', marginRight: '8px', borderRadius: '2px' }} />
+                          {info.name_en}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>{team.mp}</td>
+                        <td style={{ textAlign: 'center' }}>{team.w}</td>
+                        <td style={{ textAlign: 'center' }}>{team.d}</td>
+                        <td style={{ textAlign: 'center' }}>{team.l}</td>
+                        <td style={{ textAlign: 'center' }}>{team.gf}</td>
+                        <td style={{ textAlign: 'center' }}>{team.gc}</td>
+                        <td style={{ textAlign: 'center' }}>{team.gd}</td>
+                        <td style={{ textAlign: 'center', fontWeight: 'bold', color: '#00ff00' }}>{team.pts}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ))
+        ) : (
+          <p>Cargando posiciones...</p>
+        )}
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default AdminDashboard;
