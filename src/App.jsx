@@ -7,7 +7,7 @@ import MatchDetail from './MatchDetail';
 import LineupComponent from './LineupComponent';
 import Resultados from './Resultados';
 import AdminDashboard from './AdminDashboard';
-import StandingsPage from './StandingsTable';
+import StandingsTable from './StandingsTable';
 
 function App() {
   const [matches, setMatches] = useState([]);
@@ -43,7 +43,7 @@ function App() {
           <Route path="/resumen" element={<Resultados matches={matches} />} />
           {/* Tu link secreto será: tuweb.com/admin-secreto-2026 */}
           <Route path="/admin-secreto-2026" element={<AdminDashboard />} />
-          <Route path="/standingstable" element={<StandingsPage />} />
+          <Route path="/standingspage" element={<StandingsTable />} />
         </Routes>
       </div>
     </BrowserRouter>
