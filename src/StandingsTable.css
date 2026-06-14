@@ -1,60 +1,37 @@
-.standings-page {
-  padding: 60px 40px; /* Más espacio arriba y abajo */
-  color: white;
-  background-color: #0b0e14;
-  min-height: 100vh;
-}
-
-.standings-page h1 {
-  text-align: center;
-  margin-bottom: 50px;
-  font-size: 2rem;
-}
-
-.groups-grid {
-  display: grid;
-  /* FUERZA 3 COLUMNAS */
-  grid-template-columns: repeat(3, 1fr); 
-  /* MÁS ESPACIO ENTRE TARJETAS (gap) */
-  gap: 40px; 
-  max-width: 1300px;
-  margin: 0 auto;
-}
-
+/* Asegura que cada tarjeta sea un contenedor limpio */
 .group-card {
   background-color: #1a1d23;
-  padding: 25px; /* Más padding interno para que no se vea apretado */
-  border-radius: 16px; /* Bordes más redondeados */
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-  border: 1px solid #2d3436; /* Un borde sutil ayuda a separar del fondo */
+  padding: 24px; /* Aumentamos el margen interno de la tarjeta */
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
 }
 
-.group-card h3 {
-  margin-bottom: 20px;
-  border-bottom: 2px solid #333;
-  padding-bottom: 10px;
+/* Esta es la clave para que las filas no se vean pegadas */
+.group-card table {
+  width: 100%;
+  border-collapse: collapse; /* Mantenemos colapsado pero controlamos el padding */
+}
+
+/* Damos aire a las celdas para que el texto respire */
+.group-card th, .group-card td {
+  padding: 12px 8px; /* Aumentamos el padding vertical para separar las filas */
   text-align: center;
 }
 
-/* Ajustes de tabla */
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 12px; /* Más separación entre filas */
-  font-size: 0.9em;
-}
-
+/* Alineación especial para la celda de equipos */
 .team-cell {
   display: flex;
   align-items: center;
   gap: 12px;
+  text-align: left;
+  padding-left: 10px; /* Separamos un poco el texto del borde izquierdo */
 }
 
-/* Responsivo para móviles */
-@media (max-width: 900px) {
-  .groups-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 600px) {
-  .groups-grid { grid-template-columns: 1fr; }
+/* Separación entre el título y la tabla */
+.group-card h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.1em;
+  color: #e2e8f0;
 }
