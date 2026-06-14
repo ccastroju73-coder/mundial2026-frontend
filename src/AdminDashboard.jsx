@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
-// 1. Define el componente MatchEditor
-  const MatchEditor = ({ match, onUpdate }) => {
+const MatchEditor = ({ match, onUpdate }) => {
   const [homeScore, setHomeScore] = useState(match.home_score || 0);
   const [awayScore, setAwayScore] = useState(match.away_score || 0);
 
@@ -40,7 +39,7 @@ const AdminDashboard = () => {
     setMatches(await matchesRes.json());
   }, []);
 
- // Asegúrate de que fetchData esté definido con useCallback arriba
+  // Asegúrate de que fetchData esté definido con useCallback arriba
   useEffect(() => {
     let isMounted = true; // Variable de control para evitar actualizaciones si el componente se desmonta
 
@@ -55,6 +54,26 @@ const AdminDashboard = () => {
     return () => { isMounted = false; }; // Limpieza
   }, [fetchData]);
 
+  // Lógica de agrupamiento DENTRO del componente
+  // ... dentro de AdminDashboard
+  
+  // Esto solo se recalcula cuando 'matches' cambia, no en cada render innecesario
+  const groupedMatches = useMemo(() => {
+    if (!matches || matches.length === 0) return {};
+    
+    const acc = matches.reduce((groupAcc, match) => {
+      if (!groupAcc[match.group]) groupAcc[match.group] = [];
+      groupAcc[match.group].push(match);
+      return groupAcc;
+    }, {});
+
+    Object.keys(acc).forEach(key => {
+      acc[key].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+    });
+    
+    return acc;
+  }, [matches]);
+
   const getTeamInfo = (id) => {
     return teamsData.find(t => t.id === id) || { name_en: "Desconocido", flag: "" };
   };
@@ -63,14 +82,19 @@ const AdminDashboard = () => {
     <div style={{ maxWidth: '1000px', margin: 'auto', padding: '20px' }}>
       <h1>Panel de Control del Mundial</h1>
       
-      {/* Sección de partidos */}
+      {/* Sección de partidos agrupados */}
       <div style={{ marginBottom: '50px' }}>
         <h3>Partidos</h3>
-        {matches.map(match => (
-           <div key={match._id} style={{ display: 'flex', gap: '10px', padding: '5px' }}>
-              <span>ID: {match.home_team_id} vs {match.away_team_id}</span>
-              <MatchEditor match={match} onUpdate={fetchData} />
-           </div>
+        {Object.keys(groupedMatches).sort().map(groupKey => (
+          <div key={groupKey} style={{ marginBottom: '20px' }}>
+            <h4>Grupo {groupKey}</h4>
+            {groupedMatches[groupKey].map(match => (
+              <div key={match._id} style={{ display: 'flex', gap: '10px', padding: '5px', alignItems: 'center' }}>
+                <span>ID: {match.id} | {match.home_team_id} vs {match.away_team_id}</span>
+                <MatchEditor match={match} onUpdate={fetchData} />
+              </div>
+            ))}
+          </div>
         ))}
       </div>
 
@@ -79,7 +103,7 @@ const AdminDashboard = () => {
         groups.map(group => (
           <div key={group._id} style={{ marginBottom: '40px' }}>
             <h2>Grupo {group.group}</h2>
-            <table style={{ width: '100%', marginBottom: '40px', borderCollapse: 'collapse', color: '#fff', tableLayout: 'fixed' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', tableLayout: 'fixed' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid #333', color: '#aaa', fontSize: '0.9rem' }}>
                   <th style={{ textAlign: 'left', padding: '12px', width: '40%' }}>Equipo</th>
