@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import './StandingsPage.css';
+import './StandingsTable.css';
 
-const StandingsPage = () => {
+const StandingsTable = () => {
   const [groups, setGroups] = useState([]);
   const [teams, setTeams] = useState([]);
 
@@ -20,7 +20,7 @@ const StandingsPage = () => {
   };
 
   return (
-    <div className="standings-page">
+    <div className="standings-table">
       <h1>Tabla de Posiciones</h1>
       <div className="groups-grid">
         {groups.map((group) => (
@@ -62,4 +62,4 @@ const StandingsPage = () => {
   );
 };
 
-export default StandingsPage;
+export default StandingsTable;
