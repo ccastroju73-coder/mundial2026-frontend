@@ -79,18 +79,46 @@ const AdminDashboard = () => {
     <div style={{ maxWidth: '1000px', margin: 'auto', padding: '20px' }}>
       <h1>Panel de Control del Mundial</h1>
       
-      {/* Sección de partidos agrupados */}
+{/* Sección de partidos agrupados */}
       <div style={{ marginBottom: '50px' }}>
         <h3>Partidos</h3>
         {Object.keys(groupedMatches).sort().map(groupKey => (
-          <div key={groupKey} style={{ marginBottom: '20px' }}>
-            <h4>Grupo {groupKey}</h4>
-            {groupedMatches[groupKey].map(match => (
-              <div key={match._id} style={{ display: 'flex', gap: '10px', padding: '5px', alignItems: 'center' }}>
-                <span>ID: {match.id} | {match.home_team_id} vs {match.away_team_id}</span>
-                <MatchEditor match={match} onUpdate={fetchData} />
-              </div>
-            ))}
+          <div key={groupKey} style={{ marginBottom: '30px', backgroundColor: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
+            <h4 style={{ color: '#aaa', marginBottom: '15px' }}>Grupo {groupKey}</h4>
+            {groupedMatches[groupKey].map(match => {
+              const homeTeam = getTeamInfo(match.home_team_id);
+              const awayTeam = getTeamInfo(match.away_team_id);
+
+              return (
+                <div key={match._id} style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'space-between',
+                  padding: '8px 0',
+                  borderBottom: '1px solid #333'
+                }}>
+                  {/* ID */}
+                  <span style={{ width: '40px', color: '#888' }}>#{match.id}</span>
+                  
+                  {/* Equipo Local */}
+                  <div style={{ display: 'flex', alignItems: 'center', width: '220px' }}>
+                    <img src={homeTeam.flag} alt={homeTeam.name_en} style={{ width: '24px', marginRight: '10px', borderRadius: '3px' }} />
+                    {homeTeam.name_en}
+                  </div>
+
+                  {/* Marcador / Editor (Alineado al centro) */}
+                  <div style={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+                    <MatchEditor match={match} onUpdate={fetchData} />
+                  </div>
+
+                  {/* Equipo Visitante */}
+                  <div style={{ display: 'flex', alignItems: 'center', width: '220px', justifyContent: 'flex-end' }}>
+                    {awayTeam.name_en}
+                    <img src={awayTeam.flag} alt={awayTeam.name_en} style={{ width: '24px', marginLeft: '10px', borderRadius: '3px' }} />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>
