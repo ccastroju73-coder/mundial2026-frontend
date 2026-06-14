@@ -26,26 +26,27 @@ const StandingsPage = () => {
                   <th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th>
                 </tr>
               </thead>
-              <tbody>
-                {/* Ordenamos por puntos (pts) descendente */}
-                {group.teams.sort((a, b) => parseInt(b.pts) - parseInt(a.pts)).map((team) => (
-                  <tr key={team.team_id}>
-                    <td className="team-cell">
-                      {/* Asumiendo que tienes una URL de bandera en tu objeto team */}
-                      <img src={team.flag} alt={team.name} />
-                      {team.name}
-                    </td>
-                    <td>{team.mp}</td>
-                    <td>{team.w}</td>
-                    <td>{team.d}</td>
-                    <td>{team.l}</td>
-                    <td>{team.gf}</td>
-                    <td>{team.ga}</td>
-                    <td>{team.gd}</td>
-                    <td className="pts">{team.pts}</td>
-                  </tr>
+            <tbody>
+                 {group.teams.sort((a, b) => parseInt(b.pts) - parseInt(a.pts)).map((team) => (
+                    <tr key={team.team_id}>
+                        <td className="team-cell" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px' }}>
+                            {/* Aquí agregamos la lógica de la imagen y el nombre */}
+                            <img 
+                                src={team.flag || 'https://via.placeholder.com/20'} // Usa la propiedad flag o un placeholder
+                                alt={team.name} 
+                                style={{ width: '25px', height: '18px', borderRadius: '2px' }} 
+                            />
+                            <span style={{ color: 'white' }}>{team.name}</span>
+                        </td>
+                        <td>{team.mp}</td>
+                        <td>{team.w}</td>
+                        <td>{team.d}</td>
+                        <td>{team.l}</td>
+                        <td>{team.gd}</td>
+                        <td className="pts" style={{ color: '#4ade80', fontWeight: 'bold' }}>{team.pts}</td>
+                    </tr>
                 ))}
-              </tbody>
+              </tbody>..
             </table>
           </div>
         ))}
