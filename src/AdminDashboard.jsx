@@ -39,7 +39,6 @@ const AdminDashboard = () => {
     setMatches(await matchesRes.json());
   }, []);
 
- // Asegúrate de que fetchData esté definido con useCallback arriba
   useEffect(() => {
     let isMounted = true; // Variable de control para evitar actualizaciones si el componente se desmonta
 
@@ -54,91 +53,71 @@ const AdminDashboard = () => {
     return () => { isMounted = false; }; // Limpieza
   }, [fetchData]);
 
-  // Lógica de agrupamiento y ordenamiento optimizada
+
   const groupedMatches = useMemo(() => {
     if (!matches || matches.length === 0) return {};
-    
     const acc = matches.reduce((groupAcc, match) => {
       if (!groupAcc[match.group]) groupAcc[match.group] = [];
       groupAcc[match.group].push(match);
       return groupAcc;
     }, {});
-
-    Object.keys(acc).forEach(key => {
-      acc[key].sort((a, b) => parseInt(a.id) - parseInt(b.id));
-    });
-    
+    Object.keys(acc).forEach(key => acc[key].sort((a, b) => parseInt(a.id) - parseInt(b.id)));
     return acc;
   }, [matches]);
 
-  const getTeamInfo = (id) => {
-    return teamsData.find(t => t.id === id) || { name_en: "Desconocido", flag: "" };
-  };
+  const getTeamInfo = (id) => teamsData.find(t => t.id === id) || { name_en: "Desconocido", flag: "" };
 
-// ... (mantiene tus estados, useEffect, useMemo y getTeamInfo exactamente igual)
+  return (
+    <div style={{ maxWidth: '1400px', margin: 'auto', padding: '20px' }}>
+      <h1>Panel de Control del Mundial</h1>
 
-return (
-  <div style={{ maxWidth: '1400px', margin: 'auto', padding: '20px' }}>
-    <h1>Panel de Control del Mundial</h1>
-    
-    <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-start' }}>
-      
-      {/* Columna de Partidos */}
-      <div style={{ flex: 1 }}>
-        <h3>Partidos</h3>
-        {Object.keys(groupedMatches).sort().map(groupKey => (
-          <div key={groupKey} style={{ marginBottom: '30px', backgroundColor: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
-            <h4 style={{ color: '#aaa', marginBottom: '15px' }}>Grupo {groupKey}</h4>
-            {groupedMatches[groupKey].map(match => {
-              const homeTeam = getTeamInfo(match.home_team_id);
-              const awayTeam = getTeamInfo(match.away_team_id);
-              
-              const [datePart, time] = match.local_date.split(' ');
-              const [mm, dd, yyyy] = datePart.split('/');
-              const formattedDate = `${dd}/${mm}/${yyyy}`;
-
-              return (
-                <div key={match._id} style={{ display: 'flex', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #333', fontSize: '0.9rem' }}>
-                  <span style={{ width: '40px', color: '#888' }}>#{match.id}</span>
-                  <span style={{ width: '80px', color: '#ccc' }}>{formattedDate}</span>
-                  <span style={{ width: '60px', color: '#aaa' }}>{time}</span>
-                  <div style={{ display: 'flex', alignItems: 'center', width: '200px' }}>
-                    <img src={homeTeam.flag} alt={homeTeam.name_en} style={{ width: '20px', marginRight: '8px', borderRadius: '2px' }} />
-                    {homeTeam.name_en}
-                  </div>
-                  <div style={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+      {/* Iteramos sobre los grupos para asegurar que partidos y tabla siempre vayan juntos */}
+      {groups.sort((a, b) => a.group.localeCompare(b.group)).map(group => {
+        const groupMatches = groupedMatches[group.group] || [];
+        
+        return (
+          <div key={group._id} style={{ 
+            display: 'flex', 
+            gap: '30px', 
+            marginBottom: '40px', 
+            borderBottom: '2px solid #333', 
+            paddingBottom: '30px',
+            alignItems: 'flex-start' 
+          }}>
+            
+            {/* Columna Partidos */}
+            <div style={{ flex: 1, backgroundColor: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
+              <h4 style={{ color: '#aaa', marginBottom: '15px' }}>Grupo {group.group} - Partidos</h4>
+              {groupMatches.map(match => {
+                const homeTeam = getTeamInfo(match.home_team_id);
+                const awayTeam = getTeamInfo(match.away_team_id);
+                const [datePart, time] = match.local_date.split(' ');
+                const [mm, dd, yyyy] = datePart.split('/');
+                return (
+                  <div key={match._id} style={{ display: 'flex', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #333', fontSize: '0.85rem' }}>
+                    <span style={{ width: '30px', color: '#888' }}>#{match.id}</span>
+                    <span style={{ width: '70px', color: '#ccc' }}>{dd}/{mm}/{yyyy}</span>
+                    <span style={{ width: '50px', color: '#aaa' }}>{time}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', width: '150px' }}>
+                      <img src={homeTeam.flag} style={{ width: '20px', marginRight: '8px' }} /> {homeTeam.name_en}
+                    </div>
                     <MatchEditor match={match} onUpdate={fetchData} />
+                    <div style={{ display: 'flex', alignItems: 'center', width: '150px', justifyContent: 'flex-end' }}>
+                      {awayTeam.name_en} <img src={awayTeam.flag} style={{ width: '20px', marginLeft: '8px' }} />
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', width: '200px', justifyContent: 'flex-end' }}>
-                    {awayTeam.name_en}
-                    <img src={awayTeam.flag} alt={awayTeam.name_en} style={{ width: '20px', marginLeft: '8px', borderRadius: '2px' }} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
+                );
+              })}
+            </div>
 
-      {/* Columna de Posiciones */}
-      <div style={{ flex: 1 }}>
-        <h3>Posiciones</h3>
-        {groups.length > 0 && teamsData.length > 0 ? (
-          groups.map(group => (
-            <div key={group._id} style={{ marginBottom: '30px', backgroundColor: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
-              <h4 style={{ color: '#aaa', marginBottom: '15px' }}>Grupo {group.group}</h4>
-              <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff' }}>
+            {/* Columna Posiciones */}
+            <div style={{ flex: 1, backgroundColor: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
+              <h4 style={{ color: '#aaa', marginBottom: '15px' }}>Grupo {group.group} - Posiciones</h4>
+              <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', fontSize: '0.9rem' }}>
                 <thead>
-                  <tr style={{ color: '#aaa', fontSize: '0.85rem', borderBottom: '1px solid #333' }}>
+                  <tr style={{ color: '#aaa', borderBottom: '1px solid #333' }}>
                     <th style={{ textAlign: 'left', padding: '8px' }}>Equipo</th>
-                    <th style={{ padding: '8px' }}>PJ</th>
-                    <th style={{ padding: '8px' }}>G</th>
-                    <th style={{ padding: '8px' }}>E</th>
-                    <th style={{ padding: '8px' }}>P</th>
-                    <th style={{ padding: '8px' }}>GF</th>
-                    <th style={{ padding: '8px' }}>GC</th>
-                    <th style={{ padding: '8px' }}>DG</th>
-                    <th style={{ padding: '8px' }}>Pts</th>
+                    <th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -146,9 +125,8 @@ return (
                     const info = getTeamInfo(team.team_id);
                     return (
                       <tr key={team._id} style={{ borderBottom: '1px solid #222' }}>
-                        <td style={{ padding: '10px 8px', display: 'flex', alignItems: 'center' }}>
-                          <img src={info.flag} style={{ width: '20px', marginRight: '8px', borderRadius: '2px' }} />
-                          {info.name_en}
+                        <td style={{ padding: '8px', display: 'flex', alignItems: 'center' }}>
+                          <img src={info.flag} style={{ width: '20px', marginRight: '8px' }} /> {info.name_en}
                         </td>
                         <td style={{ textAlign: 'center' }}>{team.mp}</td>
                         <td style={{ textAlign: 'center' }}>{team.w}</td>
@@ -164,14 +142,11 @@ return (
                 </tbody>
               </table>
             </div>
-          ))
-        ) : (
-          <p>Cargando posiciones...</p>
-        )}
-      </div>
+          </div>
+        );
+      })}
     </div>
-  </div>
-);
+  );
 };
 
 export default AdminDashboard;
