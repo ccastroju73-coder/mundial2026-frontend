@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import './StandingsPage.css'; // Asegúrate de crear este archivo
+import './StandingsTable.css'; // Asegúrate de crear este archivo
 
 const StandingsPage = () => {
   const [groups, setGroups] = useState([]);
