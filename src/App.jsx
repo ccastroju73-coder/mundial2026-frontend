@@ -7,7 +7,7 @@ import MatchDetail from './MatchDetail';
 import LineupComponent from './LineupComponent';
 import Resultados from './Resultados';
 import AdminDashboard from './AdminDashboard';
-import StandingsPage from './StandingsPage';
+import StandingsPage from './StandingsTable';
 
 function App() {
   const [matches, setMatches] = useState([]);
