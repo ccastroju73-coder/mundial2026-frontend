@@ -43,7 +43,7 @@ function App() {
           <Route path="/resumen" element={<Resultados matches={matches} />} />
           {/* Tu link secreto será: tuweb.com/admin-secreto-2026 */}
           <Route path="/admin-secreto-2026" element={<AdminDashboard />} />
-          <Route path="/standingtable" element={<StandingsPage />} />
+          <Route path="/standingstable" element={<StandingsPage />} />
         </Routes>
       </div>
     </BrowserRouter>
