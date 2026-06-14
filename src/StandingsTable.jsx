@@ -1,16 +1,23 @@
 import { useState, useEffect } from 'react';
-import './StandingsTable.css'; // Asegúrate de crear este archivo
+import './StandingsPage.css';
 
 const StandingsPage = () => {
   const [groups, setGroups] = useState([]);
+  const [teams, setTeams] = useState([]);
 
   useEffect(() => {
-    // Ajusta la URL según el endpoint que ya tienes funcionando
-    fetch('https://api-mundial-2026-iwfn.onrender.com/api/groups')
-      .then(res => res.json())
-      .then(data => setGroups(data))
-      .catch(err => console.error("Error al cargar grupos:", err));
+    Promise.all([
+      fetch('https://api-mundial-2026-iwfn.onrender.com/api/groups').then(res => res.json()),
+      fetch('https://api-mundial-2026-iwfn.onrender.com/api/teams').then(res => res.json())
+    ]).then(([groupsData, teamsData]) => {
+      setGroups(groupsData);
+      setTeams(teamsData);
+    }).catch(err => console.error("Error al cargar datos:", err));
   }, []);
+
+  const getTeamInfo = (teamId) => {
+    return teams.find(t => t.id.toString() === teamId.toString()) || { name_en: "Desconocido", flag: "" };
+  };
 
   return (
     <div className="standings-page">
@@ -26,27 +33,27 @@ const StandingsPage = () => {
                   <th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th>
                 </tr>
               </thead>
-            <tbody>
-                 {group.teams.sort((a, b) => parseInt(b.pts) - parseInt(a.pts)).map((team) => (
+              <tbody>
+                {group.teams.sort((a, b) => parseInt(b.pts) - parseInt(a.pts)).map((team) => {
+                  const teamInfo = getTeamInfo(team.team_id);
+                  return (
                     <tr key={team.team_id}>
-                        <td className="team-cell" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px' }}>
-                            {/* Aquí agregamos la lógica de la imagen y el nombre */}
-                            <img 
-                                src={team.flag || 'https://via.placeholder.com/20'} // Usa la propiedad flag o un placeholder
-                                alt={team.name} 
-                                style={{ width: '25px', height: '18px', borderRadius: '2px' }} 
-                            />
-                            <span style={{ color: 'white' }}>{team.name}</span>
-                        </td>
-                        <td>{team.mp}</td>
-                        <td>{team.w}</td>
-                        <td>{team.d}</td>
-                        <td>{team.l}</td>
-                        <td>{team.gd}</td>
-                        <td className="pts" style={{ color: '#4ade80', fontWeight: 'bold' }}>{team.pts}</td>
+                      <td className="team-cell">
+                        <img src={teamInfo.flag} alt={teamInfo.name_en} style={{ width: '25px', marginRight: '8px', borderRadius: '2px' }} />
+                        {teamInfo.name_en}
+                      </td>
+                      <td>{team.mp}</td>
+                      <td>{team.w}</td>
+                      <td>{team.d}</td>
+                      <td>{team.l}</td>
+                      <td>{team.gf}</td>
+                      <td>{team.ga}</td>
+                      <td>{team.gd}</td>
+                      <td className="pts">{team.pts}</td>
                     </tr>
-                ))}
-              </tbody>..
+                  );
+                })}
+              </tbody>
             </table>
           </div>
         ))}
