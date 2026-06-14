@@ -39,7 +39,7 @@ const AdminDashboard = () => {
     setMatches(await matchesRes.json());
   }, []);
 
-  // Asegúrate de que fetchData esté definido con useCallback arriba
+ // Asegúrate de que fetchData esté definido con useCallback arriba
   useEffect(() => {
     let isMounted = true; // Variable de control para evitar actualizaciones si el componente se desmonta
 
@@ -54,10 +54,7 @@ const AdminDashboard = () => {
     return () => { isMounted = false; }; // Limpieza
   }, [fetchData]);
 
-  // Lógica de agrupamiento DENTRO del componente
-  // ... dentro de AdminDashboard
-  
-  // Esto solo se recalcula cuando 'matches' cambia, no en cada render innecesario
+  // Lógica de agrupamiento y ordenamiento optimizada
   const groupedMatches = useMemo(() => {
     if (!matches || matches.length === 0) return {};
     
